@@ -1,5 +1,5 @@
 # FORM: business rules
-Enforce all of these rules **server-side** (Postgres RPCs, triggers or Edge Functions). The client only displays their results.
+All of these rules are implemented **server-side** in `server/src/logic.js` and `server/src/routes/`. The client only displays their results.
 
 ## Plans and credits
 | Plan | Price (₪/month) | Credits/month | Weekly goal |
@@ -78,7 +78,7 @@ Store discount prizes become a `reward` row that the member toggles at store che
 - Private per member and visible **only to staff**. Pinned note (injuries, cautions) plus a dated log ("12 במאי · נינה — …").
 - Class attendee rows show a short badge (e.g. "shoulder note").
 
-## AI workout builder (Edge Function `ai-workout`)
+## AI workout builder (`POST /api/ai/workout`)
 Plans always have 4 blocks, in order: **חימום, עיקרי, פיניש, שחרור**. Each item is `{name, dose, note}`.
 Modes:
 - `generate`: a full plan from focus, level and duration (the prototype runs this automatically for "new plan").

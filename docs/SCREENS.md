@@ -1,5 +1,5 @@
 # FORM: screen inventory
-Screen IDs match `<sc-if value="{{ is.<id> }}">` in `design/FORM Prototype HE.dc.html`. Copy is in the prototype. Data sources refer to `schema.sql`.
+Screen IDs match `<sc-if value="{{ is.<id> }}">` in `design/FORM Prototype HE.dc.html`. Copy is in the prototype. Data comes from the endpoints in `server/API.md`.
 
 ## Member
 | ID | Screen | Data | Actions |
@@ -35,7 +35,7 @@ Screen IDs match `<sc-if value="{{ is.<id> }}">` in `design/FORM Prototype HE.dc
 | c_checkin | Present / expected counters; attendee rows (tap toggles present in green / expected in orange); check in all; start/end class; message all | set_attendance, end_session |
 | c_notes | Member header; member switcher chips; pinned caution note; dated note log; add a note | member_notes (staff only) |
 | c_programs | Plan library cards (focus, #exercises, duration, updated); new plan (auto-generates with AI) | workout_plans |
-| c_builder | Editable name; focus chips; 4 blocks each with a count and "+ add" (library picker); exercise rows that expand to edit dose, **AI swap** (3 options with a why), and remove; AI bar with quick chips + free text; AI summary card with undo/restore and dismiss; busy spinner ("drafting…" / "refining…"); save; assign to class | ai-workout Edge Function |
+| c_builder | Editable name; focus chips; 4 blocks each with a count and "+ add" (library picker); exercise rows that expand to edit dose, **AI swap** (3 options with a why), and remove; AI bar with quick chips + free text; AI summary card with undo/restore and dismiss; busy spinner ("drafting…" / "refining…"); save; assign to class | POST /api/ai/workout |
 
 ## Owner
 | ID | Screen | Notes |

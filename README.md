@@ -1,12 +1,9 @@
 # Handoff: FORM — Studio OS (member, coach and owner apps)
 
 ## Getting started
-```bash
-npx create-expo-app@latest . --template tabs   # scaffold into this repo
-cp .env.example .env                         # add Supabase keys
-npx supabase init && npx supabase db push    # apply the schema
-npx expo start --web
-```
+- **Backend (live now):** `server/` is a Node + Postgres API for Railway. See **SETUP.md**; the database sets itself up on first deploy.
+- **API reference:** `server/API.md`
+- **App (next):** scaffold Expo in the repo root and point `EXPO_PUBLIC_API_URL` at the Railway domain.
 
 ## Overview
 FORM is a Hebrew-first (RTL) app for a small-group fitness studio ("FORM הירקון"). One codebase serves three roles:
@@ -25,36 +22,32 @@ Everything in `design/` is a **design reference built in HTML**: an interactive 
 ## Target stack
 | Layer | Choice |
 |---|---|
-| App | **Expo (React Native) + Expo Router**, shipped as a **PWA** (`expo export --platform web`). iOS/Android builds come later from the same code. |
-| Language | TypeScript, strict |
-| Styling | StyleSheet or NativeWind; tokens in `theme.ts` (light + dark) |
-| Data | **Supabase**: Postgres, Auth (email + password, magic link for resets), Storage (post and meetup photos), Realtime (class spots, feed, waitlist) |
-| Server logic | Postgres RPC functions (`SECURITY DEFINER`) for anything touching credits or capacity; Supabase Edge Functions for AI and payments |
-| AI | Edge Function `ai-workout` → Claude API (the key stays server-side) |
-| Payments | **Not decided yet.** Build a `PaymentProvider` interface with a `MockProvider` (the prototype's 1.3 s simulated charge). Tranzila, Cardcom, Meshulam or Stripe plug in later. |
-| Client state | TanStack Query for server state; Zustand for UI state (theme, drafts) |
-| RTL | `I18nManager.forceRTL(true)` on native; `dir="rtl"` on web. Use logical start/end styles only. |
+| App | **Expo (React Native) + Expo Router**, shipped as a **PWA** (`npx expo export --platform web` → `dist/`; the server serves it automatically). |
+| Language | TypeScript for the app; the server is plain Node (ESM) |
+| API | **Node 20 + Express** in `server/`, deployed on **Railway** |
+| Database | **Railway Postgres**. Migrations live in `server/db/migrations` and run on boot; the seed runs on the first boot. |
+| Auth | Email + password (bcrypt), JWT bearer tokens (30 days). The first signup becomes owner. |
+| Uploads | Stored in Postgres (`media` table) and served from `/api/media/:id`. Move to S3/R2 when volume grows. |
+| Live updates | Server-Sent Events at `/api/events` |
+| AI | `POST /api/ai/workout` → Claude API (the key lives only in Railway variables) |
+| Payments | **Mock for now** in `/subscribe` and `/orders`. Swap in a provider later. |
+| Client state | TanStack Query for server state; Zustand for UI state |
+| RTL | `I18nManager.forceRTL(true)` on native; `dir="rtl"` on web |
 
-See `supabase/migrations/0001_init.sql` (database, RLS, RPCs) and `docs/BUSINESS_RULES.md` (booking, waitlist, credits, points, moderation, AI). `docs/SCREENS.md` lists every screen with its data and actions.
+See `docs/BUSINESS_RULES.md` and `docs/SCREENS.md` for behavior. The server implements those rules, so treat `server/API.md` as the contract.
 
-## Suggested project structure
+## Repo structure
 ```
-app/
-  (auth)/welcome.tsx, signin.tsx
-  (member)/_layout.tsx            # 4 tabs: home, schedule, community, profile
-    home.tsx, schedule/index.tsx, schedule/[classId].tsx, schedule/booked.tsx
-    profile/index.tsx, profile/bookings.tsx, profile/packages.tsx, profile/checkout.tsx, profile/store.tsx
-  (coach)/_layout.tsx             # home, schedule, community, member notes
-    home.tsx, schedule/…, class/[id].tsx, class/[id]/checkin.tsx, notes/[memberId].tsx, programs/index.tsx, programs/[planId].tsx
-  (owner)/_layout.tsx             # overview, schedule, community, settings
-    overview.tsx, schedule.tsx, manage.tsx, roster/[sessionId].tsx, packages.tsx, trainers.tsx, settings.tsx, cancelled.tsx
-  community/                      # shared by all roles
-    index.tsx (feed), post.tsx, meetups/index.tsx, meetups/[id].tsx, meetups/new.tsx, leaderboard.tsx
-lib/ supabase.ts, payments/, ai.ts, i18n/
-components/ Screen, Header, TabBar, Segmented, Chip, Card, ListRow, PillButton, Field, Toast, Avatar, Badge
-supabase/ migrations/, functions/ai-workout, functions/payments-webhook
+server/                 Node API (Railway root directory)
+  src/index.js          app, SSE, error handling, static web hosting
+  src/logic.js          booking, waitlist, credits, attendance, points, timetable
+  src/routes/           core (auth, schedule, bookings, leaderboard), community, staff (coach+owner+AI), store
+  src/seed.js           first-boot studio data: edit for your real studio
+  db/migrations/        SQL, applied in order on boot
+app/ (to create)        Expo Router screens: (auth), (member), (coach), (owner), community
+docs/                   business rules, screen inventory
+design/                 HTML prototype (visual reference)
 ```
-The role comes from `profiles.role` after sign-in; the root layout redirects to the right group. Community is shared, but its bottom tab bar belongs to the current role.
 
 ## Layout shell (every screen)
 - Viewport width 390 (mobile first). On desktop web, center a 390–430 px column on the `page` color.
@@ -109,14 +102,13 @@ The theme is user-selectable (light/dark) and persisted locally.
 - `design/FORM Prototype HE.dc.html`: the primary reference (Hebrew, RTL). Screen templates are marked `<sc-if value="{{ is.<screenId> }}">`. Logic, seed data and copy are in the `<script>` at the bottom.
 - `design/FORM Prototype.dc.html`: the English version.
 - `design/support.js`: the runtime needed to open the prototypes locally.
-- `supabase/migrations/0001_init.sql`, `docs/BUSINESS_RULES.md`, `docs/SCREENS.md`: the backend and behavior spec.
+- `server/db/migrations/001_init.sql`, `docs/BUSINESS_RULES.md`, `docs/SCREENS.md`: the backend and behavior spec.
 
 ## Build order
-1. Supabase project: run `supabase db push` (applies `supabase/migrations/0001_init.sql`), seed it from the prototype data (classes, plans, products, members).
-2. Auth and role routing, app shell, theme, i18n, RTL.
-3. Member: schedule → class → book/cancel/waitlist (RPCs) → bookings → packages/checkout (mock payments) → home.
-4. Coach: home, schedule, class, check-in, notes.
-5. Owner: overview, schedule, manage (create/edit/cancel), roster, packages, trainers, settings.
-6. Community: feed, reactions, comments, reports, post creation (Storage), meetups, leaderboard (points view).
-7. Store and orders; AI workout builder (Edge Function).
-8. PWA manifest, icons, offline shell, web push for booking and waitlist notifications.
+1. Deploy `server/` to Railway (SETUP.md) and sign up as owner.
+2. Scaffold Expo; build the API client, auth, role routing, app shell, theme, i18n and RTL.
+3. Member: schedule → class → book/cancel → bookings → packages/checkout → home.
+4. Coach: home, schedule, class, check-in, notes, programs and the AI builder.
+5. Owner: overview, schedule, manage, roster, packages, trainers, settings.
+6. Community: feed, post, meetups, leaderboard. Store.
+7. PWA manifest, icons, web push.
