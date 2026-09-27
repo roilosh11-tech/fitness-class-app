@@ -1,0 +1,1335 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#e8e8e3;font-family:'Geist',system-ui,sans-serif;color:var(--ink,#161916);-webkit-font-smoothing:antialiased}
+a{color:#2c8a4b;text-decoration:none}a:hover{color:#1d6a37}
+input::placeholder,textarea::placeholder{color:#9a9d96}
+*::-webkit-scrollbar{width:0;height:0}
+input,textarea,button{color:inherit}
+[data-theme="dark"]{--page:#0b0d0b;--bg:#121512;--card:#1b1f1b;--ink:#eef0ea;--muted:#a3a89f;--line:#2c312c;--tint:#1f3324;--tint2:#28432d;--tintInk:#d4f0a6;--warn:#3a2b1b;--chip:#262b26;--seg:#232823;--hero:#1f3527;--sel:#c3f03f;--selFg:#15260c;--accent:#7fd08f;--stA:#232823;--stB:#1d211d}
+body{transition:background .2s}
+@keyframes toastIn{from{opacity:0;transform:translate(-50%,8px)}to{opacity:1;transform:translate(-50%,0)}}
+@keyframes screenIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+@keyframes spin{to{transform:rotate(360deg)}}
+</style>
+</helmet>
+<div data-form-root="1" style="color:var(--ink,#161916);background:var(--page,#e8e8e3);min-height:100vh;display:flex;flex-wrap:wrap;align-items:flex-start;justify-content:center;gap:40px;padding:40px 24px;box-sizing:border-box">
+
+<sc-if value="{{ showNav }}" hint-placeholder-val="{{ true }}">
+<div style="width:260px;flex:none;display:flex;flex-direction:column;gap:20px;padding-top:12px">
+  <div>
+    <div style="font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--accent,#2c8a4b)">FORM · Studio OS</div>
+    <div style="font-size:24px;font-weight:500;margin-top:4px">Interactive prototype</div>
+    <div style="font-size:13px;color:var(--muted,#6e726b);margin-top:6px;line-height:1.45;text-wrap:pretty">Switch experience, then tap through the app — or jump to any screen below.</div>
+    <a href="FORM Prototype HE.dc.html" style="display:inline-block;margin-top:10px;font-size:13px;color:var(--accent,#2c8a4b)">עברית →</a>
+  </div>
+  <div style="display:flex;gap:4px;background:var(--seg,#dcdcd6);border-radius:999px;padding:4px">
+    <sc-for list="{{ roles }}" as="r" hint-placeholder-count="3">
+      <button onClick="{{ r.on }}" style="flex:1;height:34px;border:none;border-radius:999px;font:inherit;font-size:13px;font-weight:500;cursor:pointer;background:{{ r.bg }};color:{{ r.fg }}">{{ r.label }}</button>
+    </sc-for>
+  </div>
+  <div style="display:flex;align-items:center;justify-content:space-between;gap:12px">
+    <div style="font-size:13px;color:var(--muted,#555a53)">Theme</div>
+    <div style="display:flex;gap:4px;background:var(--seg,#dcdcd6);border-radius:999px;padding:4px;width:170px">
+      <sc-for list="{{ themes }}" as="r" hint-placeholder-count="2">
+        <button onClick="{{ r.on }}" style="flex:1;height:30px;border:none;border-radius:999px;font:inherit;font-size:12px;font-weight:500;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;background:{{ r.bg }};color:{{ r.fg }}"><span style="width:10px;height:10px;border-radius:50%;background:{{ r.dot }};border:1px solid var(--line,#cfd0c9)"></span>{{ r.label }}</button>
+      </sc-for>
+    </div>
+  </div>
+  <div style="background:var(--card,#fff);border-radius:14px;padding:14px 16px;display:flex;flex-direction:column;gap:6px;box-shadow:0 1px 0 #dcdcd6">
+    <div style="font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:var(--accent,#2c8a4b)">What is this screen?</div>
+    <div style="font-size:15px;font-weight:500">{{ screenName }}</div>
+    <div style="font-size:13px;color:var(--muted,#555a53);line-height:1.5;text-wrap:pretty">{{ screenDesc }}</div>
+  </div>
+  <div style="display:flex;flex-direction:column;gap:2px">
+    <sc-for list="{{ screenList }}" as="s" hint-placeholder-count="8">
+      <button onClick="{{ s.on }}" style="display:flex;align-items:center;gap:10px;text-align:left;border:none;border-radius:10px;padding:8px 10px;font:inherit;font-size:13px;cursor:pointer;background:{{ s.bg }};color:{{ s.fg }}">
+        <span style="font-family:'Geist Mono',monospace;font-size:11px;color:var(--muted,#8b8f88);width:18px">{{ s.num }}</span>{{ s.label }}
+      </button>
+    </sc-for>
+  </div>
+</div>
+</sc-if>
+
+<div style="width:414px;height:868px;flex:none;background:#101210;border-radius:62px;padding:12px;box-sizing:border-box;box-shadow:0 30px 80px rgba(20,30,20,.18),0 0 0 1px #2a2d2a inset">
+<div data-theme="{{ themeName }}" style="position:relative;width:390px;height:844px;border-radius:50px;overflow:hidden;background:var(--bg,#f4f4f1);display:flex;flex-direction:column">
+
+  <div style="position:absolute;top:11px;left:50%;transform:translateX(-50%);width:122px;height:36px;border-radius:20px;background:#000;z-index:5"></div>
+  <div style="height:54px;flex:none;background:var(--card,#fff);display:flex;align-items:center;justify-content:space-between;padding:0 30px 0 42px;font-size:16px;font-weight:600">
+    <span>9:41</span>
+    <div style="display:flex;align-items:center;gap:6px">
+      <div style="display:flex;align-items:flex-end;gap:2px;height:11px"><div style="width:3px;height:4px;background:var(--ink,#161916);border-radius:1px"></div><div style="width:3px;height:6px;background:var(--ink,#161916);border-radius:1px"></div><div style="width:3px;height:8px;background:var(--ink,#161916);border-radius:1px"></div><div style="width:3px;height:11px;background:var(--ink,#161916);border-radius:1px"></div></div>
+      <div style="width:24px;height:11px;border:1.5px solid var(--ink,#161916);border-radius:3px;padding:1px;box-sizing:border-box;opacity:.9"><div style="width:75%;height:100%;background:var(--ink,#161916);border-radius:1px"></div></div>
+    </div>
+  </div>
+
+  <div style="flex:none;background:var(--card,#fff);padding:6px 20px 16px">
+    <div style="display:flex;align-items:center;gap:8px;min-height:16px">
+      <sc-if value="{{ canBack }}" hint-placeholder-val="{{ false }}">
+        <button onClick="{{ back }}" style="border:none;background:none;padding:0 4px 0 0;cursor:pointer;display:flex;align-items:center;color:var(--accent,#2c8a4b)"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M10 3L5 8l5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path></svg></button>
+      </sc-if>
+      <div style="font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:var(--accent,#2c8a4b)">{{ meta.eyebrow }}</div>
+    </div>
+    <div style="font-size:27px;font-weight:500;letter-spacing:-.01em;margin-top:3px;line-height:1.15">{{ meta.title }}</div>
+  </div>
+
+  <div ref="{{ scrollRef }}" style="flex:1;overflow-y:auto;overflow-x:hidden">
+  <div key="{{ screenKey }}" style="padding:16px 18px 28px;display:flex;flex-direction:column;gap:12px;animation:screenIn .28s ease both">
+
+<!-- ================= MEMBER ================= -->
+<sc-if value="{{ is.m_welcome }}" hint-placeholder-val="{{ true }}">
+  <img src="assets/welcome.png" alt="Small group kettlebell class" style="width:100%;height:230px;object-fit:cover;border-radius:16px;display:block">
+  <div style="font-size:16px;line-height:1.45;margin:6px 0 4px;text-wrap:pretty">Small-group training, expert coaching and a community that meets you where you are.</div>
+  <button onClick="{{ act.getStarted }}" style="width:100%;height:50px;border:none;border-radius:999px;background:#c3f03f;color:#15260c;font:inherit;font-size:15px;font-weight:500;cursor:pointer">Get started</button>
+  <button onClick="{{ act.toSignin }}" style="width:100%;height:50px;border:1px solid var(--line,#e0e0da);border-radius:999px;background:var(--card,#fff);color:var(--ink,#161916);font:inherit;font-size:15px;cursor:pointer">I already have an account</button>
+  <div style="font-size:12px;color:var(--muted,#767a73);text-align:center;margin-top:4px">By continuing, you agree to FORM Studio's terms.</div>
+</sc-if>
+
+<sc-if value="{{ is.m_signin }}" hint-placeholder-val="{{ false }}">
+  <div style="display:flex;flex-direction:column;gap:6px">
+    <div style="font-size:11px;letter-spacing:.04em;text-transform:uppercase;color:var(--muted,#6e726b)">Email</div>
+    <input value="{{ form.email }}" onChange="{{ f.email }}" type="email" style="width:100%;box-sizing:border-box;height:48px;border:1px solid var(--line,#e0e0da);border-radius:12px;background:var(--card,#fff);padding:0 14px;font:inherit;font-size:15px;color:var(--ink,#161916);outline:none">
+    <div style="font-size:12px;color:#c9562c">{{ err.email }}</div>
+  </div>
+  <div style="display:flex;flex-direction:column;gap:6px">
+    <div style="font-size:11px;letter-spacing:.04em;text-transform:uppercase;color:var(--muted,#6e726b)">Password</div>
+    <input value="{{ form.password }}" onChange="{{ f.password }}" type="password" style="width:100%;box-sizing:border-box;height:48px;border:1px solid var(--line,#e0e0da);border-radius:12px;background:var(--card,#fff);padding:0 14px;font:inherit;font-size:15px;color:var(--ink,#161916);outline:none">
+    <div style="display:flex;justify-content:space-between;font-size:12px"><span style="color:#c9562c">{{ err.password }}</span><button onClick="{{ act.forgot }}" style="border:none;background:none;padding:0;font:inherit;color:var(--accent,#2c8a4b);cursor:pointer">Forgot password?</button></div>
+  </div>
+  <button onClick="{{ act.signIn }}" style="width:100%;height:50px;border:none;border-radius:999px;background:#c3f03f;color:#15260c;font:inherit;font-size:15px;font-weight:500;cursor:pointer">Sign in</button>
+  <div style="background:var(--card,#fff);border:1px solid var(--line,#e8e8e3);border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:8px">
+    <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><rect x="3.5" y="8" width="11" height="8" rx="2" stroke="currentColor" stroke-width="1.5"></rect><path d="M6 8V5.5a3 3 0 016 0V8" stroke="currentColor" stroke-width="1.5"></path></svg>
+    <div style="font-size:14px;color:var(--muted,#767a73);line-height:1.45">Your health and payment details stay private. New here? Join with the invite link your studio sent you.</div>
+  </div>
+</sc-if>
+
+<sc-if value="{{ is.m_home }}" hint-placeholder-val="{{ false }}">
+  <div style="background:var(--hero,#13261a);border-radius:16px;padding:16px 18px;display:flex;align-items:center;justify-content:space-between;color:#fff">
+    <div><div style="font-size:18px;font-weight:500">{{ home.streak }}-week rhythm</div><div style="font-size:12px;color:#b9c4bb;margin-top:3px">You're building consistency.</div></div>
+    <div style="text-align:right"><div style="font-size:24px;color:#c3f03f;font-weight:500">{{ credits }}</div><div style="font-size:10px;color:#b9c4bb;text-transform:uppercase;letter-spacing:.04em">credits</div></div>
+  </div>
+  <div style="display:flex;justify-content:space-between;align-items:baseline;margin-top:6px"><div style="font-size:19px;font-weight:500">Next up</div><button onClick="{{ act.toBookings }}" style="border:none;background:none;padding:0;font:inherit;font-size:13px;color:var(--accent,#2c8a4b);cursor:pointer">View bookings</button></div>
+  <sc-if value="{{ home.hasNext }}" hint-placeholder-val="{{ true }}">
+    <div onClick="{{ home.next.open }}" style="display:flex;align-items:center;gap:14px;background:var(--card,#fff);border:1px solid var(--line,#e8e8e3);border-radius:14px;padding:14px 14px 14px 16px;cursor:pointer">
+      <div style="width:52px;flex:none"><div style="font-size:14px">{{ home.next.t }}</div><div style="font-size:11px;color:var(--muted,#767a73);margin-top:2px">{{ home.next.day }}</div></div>
+      <div style="flex:1;min-width:0"><div style="font-size:15px;font-weight:500">{{ home.next.n }}</div><div style="font-size:12px;color:var(--muted,#767a73);margin-top:3px">{{ home.next.sub }}</div></div>
+      <span style="border-radius:999px;padding:6px 12px;font-size:12px;font-weight:500;background:var(--tint2,#e2f5c4);color:var(--tintInk,#1d3a12)">Booked</span>
+    </div>
+  </sc-if>
+  <sc-if value="{{ home.noNext }}" hint-placeholder-val="{{ false }}">
+    <div style="background:var(--card,#fff);border:1px dashed var(--line,#d6d6d0);border-radius:14px;padding:18px;font-size:14px;color:var(--muted,#767a73)">Nothing booked yet. Pick a class to keep your rhythm.</div>
+  </sc-if>
+  <div style="font-size:19px;font-weight:500;margin-top:6px">This week</div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+    <div style="background:var(--card,#fff);border:1px solid var(--line,#e8e8e3);border-radius:14px;padding:14px"><div style="font-size:11px;letter-spacing:.04em;text-transform:uppercase;color:var(--muted,#6e726b)">Classes</div><div style="font-size:24px;margin-top:6px">{{ home.attended }}</div><div style="font-size:12px;color:var(--accent,#2c8a4b);margin-top:4px">Goal: {{ home.goal }}</div></div>
+    <div style="background:var(--card,#fff);border:1px solid var(--line,#e8e8e3);border-radius:14px;padding:14px"><div style="font-size:11px;letter-spacing:.04em;text-transform:uppercase;color:var(--muted,#6e726b)">Minutes</div><div style="font-size:24px;margin-top:6px">{{ home.minutes }}</div><div style="font-size:12px;color:var(--accent,#2c8a4b);margin-top:4px">Checked-in classes only</div></div>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+    <div onClick="{{ act.toLeaderboard }}" style="background:var(--card,#fff);border:1px solid var(--line,#e8e8e3);border-radius:14px;padding:14px;cursor:pointer"><div style="font-size:11px;letter-spacing:.04em;text-transform:uppercase;color:var(--muted,#6e726b)">Leaderboard</div><div style="font-size:24px;margin-top:6px">#{{ lb.myRank }}</div><div style="font-size:12px;color:var(--accent,#2c8a4b);margin-top:4px">{{ lb.myPts }} pts this week</div></div>
+    <div onClick="{{ act.toStore }}" style="background:var(--card,#fff);border:1px solid var(--line,#e8e8e3);border-radius:14px;padding:14px;cursor:pointer"><div style="font-size:11px;letter-spacing:.04em;text-transform:uppercase;color:var(--muted,#6e726b)">FORM Shop</div><div style="font-size:24px;margin-top:6px">10% off</div><div style="font-size:12px;color:var(--accent,#2c8a4b);margin-top:4px">Reward ready to use</div></div>
+  </div>
+  <div onClick="{{ act.toCommunity }}" style="display:flex;align-items:center;gap:12px;background:var(--tint,#eef8d6);border-radius:14px;padding:12px 14px;cursor:pointer">
+    <div style="width:34px;height:34px;border-radius:50%;background:var(--card,#fff);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:500;flex:none">JL</div>
+    <div style="flex:1;font-size:13px;line-height:1.4"><span style="font-weight:500">Jordan Lee</span> shared a win in Community</div>
+    <span style="font-size:13px;color:var(--accent,#2c8a4b)">Cheer</span>
+  </div>
+  <button onClick="{{ act.toSchedule }}" style="width:100%;height:50px;border:none;border-radius:999px;background:#c3f03f;color:#15260c;font:inherit;font-size:15px;font-weight:500;cursor:pointer">Find another class</button>
+</sc-if>
+
+<sc-if value="{{ is.m_schedule }}" hint-placeholder-val="{{ false }}">
+  <div style="display:flex;gap:6px;flex-wrap:wrap">
+    <sc-for list="{{ sched.filters }}" as="c" hint-placeholder-count="5">
+      <button onClick="{{ c.on }}" style="height:30px;padding:0 12px;border-radius:999px;font:inherit;font-size:12px;cursor:pointer;border:1px solid {{ c.bd }};background:{{ c.bg }};color:{{ c.fg }}">{{ c.label }}</button>
+    </sc-for>
+  </div>
+  <div style="display:flex;gap:6px;justify-content:space-between">
+    <sc-for list="{{ sched.days }}" as="d" hint-placeholder-count="5">
+      <button onClick="{{ d.on }}" style="flex:1;height:32px;border-radius:999px;font:inherit;font-size:12px;cursor:pointer;border:1px solid {{ d.bd }};background:{{ d.bg }};color:{{ d.fg }}">{{ d.label }}</button>
+    </sc-for>
+  </div>
+  <sc-for list="{{ sched.list }}" as="c" hint-placeholder-count="4">
+    <div onClick="{{ c.open }}" style="display:flex;align-items:center;gap:14px;background:var(--card,#fff);border:1px solid var(--line,#e8e8e3);border-radius:14px;padding:14px 14px 14px 16px;cursor:pointer">
+      <div style="width:52px;flex:none"><div style="font-size:14px">{{ c.t }}</div><div style="font-size:11px;color:var(--muted,#767a73);margin-top:2px">50 min</div></div>
+      <div style="flex:1;min-width:0"><div style="font-size:15px;font-weight:500">{{ c.n }}</div><div style="font-size:12px;color:var(--muted,#767a73);margin-top:3px">{{ c.sub }}</div></div>
+      <button onClick="{{ c.act }}" style="border:none;border-radius:999px;padding:6px 12px;font:inherit;font-size:12px;font-weight:500;cursor:pointer;background:{{ c.bg }};color:{{ c.fg }}">{{ c.badge }}</button>
+    </div>
+  </sc-for>
+  <sc-if value="{{ sched.empty }}" hint-placeholder-val="{{ false }}">
+    <div style="background:var(--card,#fff);border:1px dashed var(--line,#d6d6d0);border-radius:14px;padding:18px;font-size:14px;color:var(--muted,#767a73);text-align:center">No classes match this filter.</div>
+  </sc-if>
+  <div style="font-size:14px;color:var(--muted,#767a73);line-height:1.45">Availability updates live. Waitlists move automatically.</div>
+</sc-if>
+
+<sc-if value="{{ is.m_class }}" hint-placeholder-val="{{ false }}">
+  <img src="{{ cls.img }}" alt="Class photo" style="width:100%;height:170px;object-fit:cover;border-radius:16px;display:block">
+  <div style="display:flex;gap:8px;justify-content:space-between">
+    <span style="padding:6px 12px;border-radius:999px;border:1px solid var(--line,#e0e0da);background:var(--card,#fff);font-size:12px">50 min</span>
+    <span style="padding:6px 12px;border-radius:999px;border:1px solid var(--line,#e0e0da);background:var(--card,#fff);font-size:12px">{{ cls.studio }}</span>
+    <span style="padding:6px 12px;border-radius:999px;font-size:12px;background:{{ cls.pillBg }};color:{{ cls.pillFg }}">{{ cls.pill }}</span>
+  </div>
+  <div style="font-size:15px;line-height:1.45;text-wrap:pretty">{{ cls.desc }}</div>
+  <div style="display:flex;align-items:center;gap:12px">
+    <div style="width:36px;height:36px;border-radius:50%;background:var(--tint,#eef8d6);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:500">{{ cls.coachIni }}</div>
+    <div style="flex:1"><div style="font-size:14px;font-weight:500">{{ cls.coachFull }}</div><div style="font-size:12px;color:var(--muted,#767a73)">{{ cls.role }}</div></div>
+    <span style="font-size:12px;color:#d9822b">Coach</span>
+  </div>
+  <div style="background:var(--card,#fff);border:1px solid var(--line,#e8e8e3);border-radius:14px;padding:14px 16px;font-size:14px;color:var(--muted,#767a73);line-height:1.45">Cancel up to 8 hours before class without losing a credit.</div>
+  <sc-if value="{{ cls.canBook }}" hint-placeholder-val="{{ true }}">
+    <button onClick="{{ cls.book }}" style="width:100%;height:50px;border:none;border-radius:999px;background:#c3f03f;color:#15260c;font:inherit;font-size:15px;font-weight:500;cursor:pointer">{{ cls.bookLabel }}</button>
+  </sc-if>
+  <sc-if value="{{ cls.isMine }}" hint-placeholder-val="{{ false }}">
+    <div style="background:var(--tint,#eef8d6);border-radius:14px;padding:12px 16px;font-size:14px">{{ cls.mineLabel }}</div>
+    <button onClick="{{ cls.cancel }}" style="width:100%;height:50px;border:1px solid var(--line,#e0e0da);border-radius:999px;background:var(--card,#fff);color:var(--ink,#161916);font:inherit;font-size:15px;cursor:pointer">{{ cls.cancelLabel }}</button>
+  </sc-if>
+</sc-if>
+
+<sc-if value="{{ is.m_booked }}" hint-placeholder-val="{{ false }}">
+  <div style="background:var(--tint,#eef8d6);border-radius:18px;padding:26px 18px;display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center">
+    <div style="width:46px;height:46px;border-radius:50%;background:#c3f03f;display:flex;align-items:center;justify-content:center"><svg width="22" height="22" viewBox="0 0 22 22" fill="none"><path d="M6 11.5l3.5 3.5L16 8" stroke="#15260c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg></div>
+    <div style="font-size:20px;font-weight:500;margin-top:6px">See you {{ booked.dayName }}, Maya</div>
+    <div style="font-size:14px">{{ booked.line }}</div>
+  </div>
+  <div style="font-size:19px;font-weight:500;margin-top:6px">Before you arrive</div>
+  <div style="font-size:14px;color:var(--muted,#767a73);line-height:1.5">Bring water and arrive 10 minutes early. Towels and equipment are provided.</div>
+  <button onClick="{{ act.addCal }}" style="width:100%;height:50px;border:none;border-radius:999px;background:#c3f03f;color:#15260c;font:inherit;font-size:15px;font-weight:500;cursor:pointer">{{ booked.calLabel }}</button>
+  <button onClick="{{ act.toBookings }}" style="width:100%;height:50px;border:1px solid var(--line,#e0e0da);border-radius:999px;background:var(--card,#fff);color:var(--ink,#161916);font:inherit;font-size:15px;cursor:pointer">View my bookings</button>
+</sc-if>
+
+<sc-if value="{{ is.m_packages }}" hint-placeholder-val="{{ false }}">
+  <div style="font-size:14px;color:var(--muted,#767a73);line-height:1.45">Flexible monthly memberships. Pause anytime with 7 days' notice.</div>
+  <sc-for list="{{ plans }}" as="p" hint-placeholder-count="3">
+    <div onClick="{{ p.on }}" style="display:flex;align-items:center;justify-content:space-between;border-radius:14px;padding:14px 16px;cursor:pointer;background:{{ p.bg }};border:{{ p.bd }}">
+      <div><div style="font-size:15px">{{ p.name }}</div><div style="font-size:12px;color:var(--muted,#767a73);margin-top:3px">{{ p.sub }}</div></div>
+      <div style="font-size:20px">${{ p.price }}</div>
+    </div>
+  </sc-for>
+  <div style="background:var(--card,#fff);border:1px solid var(--line,#e8e8e3);border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:10px">
+    <div style="font-size:18px">Every plan includes</div>
+    <div style="font-size:14px">✓ Coach-led small groups</div>
+    <div style="font-size:14px">✓ Your studio's private community</div>
+    <div style="font-size:14px">✓ Easy booking and pause</div>
+  </div>
+  <button onClick="{{ act.toCheckout }}" style="width:100%;height:50px;border:none;border-radius:999px;background:#c3f03f;color:#15260c;font:inherit;font-size:15px;font-weight:500;cursor:pointer">Continue with {{ selPlan.short }}</button>
+</sc-if>
+
+<sc-if value="{{ is.m_checkout }}" hint-placeholder-val="{{ false }}">
+  <div style="display:flex;flex-direction:column;gap:6px">
+    <div style="font-size:11px;letter-spacing:.04em;text-transform:uppercase;color:var(--muted,#6e726b)">Cardholder</div>
+    <input value="{{ form.holder }}" onChange="{{ f.holder }}" style="width:100%;box-sizing:border-box;height:48px;border:1px solid var(--line,#e0e0da);border-radius:12px;background:var(--card,#fff);padding:0 14px;font:inherit;font-size:15px;color:var(--ink,#161916);outline:none">
+    <div style="font-size:12px;color:#c9562c">{{ err.holder }}</div>
+  </div>
+  <div style="display:flex;flex-direction:column;gap:6px">
+    <div style="font-size:11px;letter-spacing:.04em;text-transform:uppercase;color:var(--muted,#6e726b)">Card number</div>
+    <input value="{{ form.card }}" onChange="{{ f.card }}" inputMode="numeric" style="width:100%;box-sizing:border-box;height:48px;border:1px solid var(--line,#e0e0da);border-radius:12px;background:var(--card,#fff);padding:0 14px;font:inherit;font-size:15px;color:var(--ink,#161916);outline:none">
+    <div style="font-size:12px;color:#c9562c">{{ err.card }}</div>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+    <div style="display:flex;flex-direction:column;gap:6px"><div style="font-size:11px;letter-spacing:.04em;text-transform:uppercase;color:var(--muted,#6e726b)">Expiry</div><input value="{{ form.exp }}" onChange="{{ f.exp }}" placeholder="MM / YY" style="width:100%;box-sizing:border-box;height:48px;border:1px solid var(--line,#e0e0da);border-radius:12px;background:var(--card,#fff);padding:0 14px;font:inherit;font-size:15px;color:var(--ink,#161916);outline:none"><div style="font-size:12px;color:#c9562c">{{ err.exp }}</div></div>
+    <div style="display:flex;flex-direction:column;gap:6px"><div style="font-size:11px;letter-spacing:.04em;text-transform:uppercase;color:var(--muted,#6e726b)">CVC</div><input value="{{ form.cvc }}" onChange="{{ f.cvc }}" type="password" inputMode="numeric" style="width:100%;box-sizing:border-box;height:48px;border:1px solid var(--line,#e0e0da);border-radius:12px;background:var(--card,#fff);padding:0 14px;font:inherit;font-size:15px;color:var(--ink,#161916);outline:none"><div style="font-size:12px;color:#c9562c">{{ err.cvc }}</div></div>
+  </div>
+  <div style="background:var(--card,#fff);border:1px solid var(--line,#e8e8e3);border-radius:14px;padding:16px">
+    <div style="display:flex;justify-content:space-between;align-items:baseline"><div style="font-size:19px">Today</div><div style="font-size:13px;color:var(--accent,#2c8a4b)">${{ selPlan.price }}.00</div></div>
+    <div style="font-size:14px;color:var(--muted,#767a73);margin-top:6px;line-height:1.45">{{ selPlan.name }} · renews monthly on the 12th. Taxes included.</div>
+  </div>
+  <button onClick="{{ act.pay }}" style="width:100%;height:50px;border:none;border-radius:999px;background:#c3f03f;color:#15260c;font:inherit;font-size:15px;font-weight:500;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px">
+    <sc-if value="{{ paying }}" hint-placeholder-val="{{ false }}"><span style="width:16px;height:16px;border:2px solid #15260c;border-right-color:transparent;border-radius:50%;animation:spin .7s linear infinite"></span></sc-if>
+    {{ payLabel }}
+  </button>
+  <div style="font-size:13px;color:var(--muted,#767a73);line-height:1.45">Encrypted payment · Cancel or pause from Profile.</div>
+</sc-if>
+
+<sc-if value="{{ is.m_bookings }}" hint-placeholder-val="{{ false }}">
+  <div style="display:flex;gap:6px">
+    <sc-for list="{{ bk.tabs }}" as="c" hint-placeholder-count="3">
+      <button onClick="{{ c.on }}" style="height:30px;padding:0 12px;border-radius:999px;font:inherit;font-size:12px;cursor:pointer;border:1px solid {{ c.bd }};background:{{ c.bg }};color:{{ c.fg }}">{{ c.label }}</button>
+    </sc-for>
+  </div>
+  <sc-for list="{{ bk.list }}" as="b" hint-placeholder-count="2">
+    <div onClick="{{ b.open }}" style="display:flex;align-items:center;gap:14px;background:var(--card,#fff);border:1px solid var(--line,#e8e8e3);border-radius:14px;padding:14px 14px 14px 16px;cursor:pointer">
+      <div style="width:56px;flex:none"><div style="font-size:14px">{{ b.day }}</div><div style="font-size:11px;color:var(--muted,#767a73);margin-top:2px">{{ b.t }}</div></div>
+      <div style="flex:1;min-width:0"><div style="font-size:15px;font-weight:500">{{ b.n }}</div><div style="font-size:12px;color:var(--muted,#767a73);margin-top:3px">{{ b.sub }}</div></div>
+      <span style="border-radius:999px;padding:6px 12px;font-size:12px;font-weight:500;background:{{ b.bg }};color:{{ b.fg }}">{{ b.badge }}</span>
+    </div>
+  </sc-for>
+  <sc-if value="{{ bk.empty }}" hint-placeholder-val="{{ false }}">
+    <div style="background:var(--card,#fff);border:1px dashed var(--line,#d6d6d0);border-radius:14px;padding:18px;font-size:14px;color:var(--muted,#767a73);text-align:center">Nothing here yet.</div>
+  </sc-if>
+  <div style="font-size:19px;font-weight:500;margin-top:6px">Membership</div>
+  <div style="display:flex;align-items:center;justify-content:space-between;border-radius:14px;padding:14px 16px;background:var(--tint,#eef8d6);border:2px solid #3f9c55">
+    <div><div style="font-size:15px">{{ myPlan.name }}</div><div style="font-size:12px;color:var(--muted,#767a73);margin-top:3px">{{ credits }} credits remaining · renews 12 Jun</div></div>
+    <div style="font-size:20px">${{ myPlan.price }}</div>
+  </div>
+  <button onClick="{{ act.managePlan }}" style="width:100%;height:50px;border:1px solid var(--line,#e0e0da);border-radius:999px;background:var(--card,#fff);color:var(--ink,#161916);font:inherit;font-size:15px;cursor:pointer">Manage membership</button>
+</sc-if>
+
+<sc-if value="{{ is.m_profile }}" hint-placeholder-val="{{ false }}">
+  <div style="background:var(--card,#fff);border:1px solid var(--line,#e8e8e3);border-radius:14px;padding:16px;display:flex;align-items:center;gap:14px">
+    <div style="width:52px;height:52px;border-radius:50%;background:var(--tint,#eef8d6);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:500">MC</div>
+    <div><div style="font-size:19px">Maya Chen</div><div style="font-size:12px;color:var(--muted,#767a73);margin-top:2px">Member since January 2026 · FORM Eastbank</div></div>
+  </div>
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px">
+    <div style="background:var(--card,#fff);border:1px solid var(--line,#e8e8e3);border-radius:14px;padding:12px"><div style="font-size:11px;letter-spacing:.04em;text-transform:uppercase;color:var(--muted,#6e726b)">Classes</div><div style="font-size:20px;margin-top:6px">{{ prof.classes }}</div></div>
+    <div style="background:var(--card,#fff);border:1px solid var(--line,#e8e8e3);border-radius:14px;padding:12px"><div style="font-size:11px;letter-spacing:.04em;text-transform:uppercase;color:var(--muted,#6e726b)">Streak</div><div style="font-size:20px;margin-top:6px">{{ home.streak }} wk</div></div>
+    <div style="background:var(--card,#fff);border:1px solid var(--line,#e8e8e3);border-radius:14px;padding:12px"><div style="font-size:11px;letter-spacing:.04em;text-transform:uppercase;color:var(--muted,#6e726b)">Meetups</div><div style="font-size:20px;margin-top:6px">{{ prof.meetups }}</div></div>
+  </div>
+  <sc-for list="{{ prof.rows }}" as="r" hint-placeholder-count="6">
+    <button onClick="{{ r.on }}" style="display:flex;align-items:center;justify-content:space-between;width:100%;background:var(--card,#fff);border:1px solid var(--line,#e8e8e3);border-radius:14px;padding:16px;font:inherit;font-size:15px;color:var(--ink,#161916);cursor:pointer;text-align:left">{{ r.label }}<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M5 3l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path></svg></button>
+  </sc-for>
+  <button onClick="{{ act.logout }}" style="width:100%;height:50px;border:1px solid var(--line,#e0e0da);border-radius:999px;background:var(--card,#fff);color:#c9562c;font:inherit;font-size:15px;cursor:pointer">Log out</button>
+</sc-if>
+
+<sc-if value="{{ is.leaderboard }}" hint-placeholder-val="{{ false }}">
+  <div style="display:flex;gap:4px;background:var(--seg,#e6e6e0);border-radius:999px;padding:3px">
+    <button onClick="{{ act.toFeed }}" style="flex:1;height:32px;border:none;border-radius:999px;background:transparent;font:inherit;font-size:13px;cursor:pointer;color:var(--muted,#555a53)">Feed</button>
+    <button onClick="{{ act.toMeetups }}" style="flex:1;height:32px;border:none;border-radius:999px;background:transparent;font:inherit;font-size:13px;cursor:pointer;color:var(--muted,#555a53)">Meetups</button>
+    <button style="flex:1;height:32px;border:none;border-radius:999px;background:var(--card,#fff);font:inherit;font-size:13px;font-weight:500;cursor:pointer;color:var(--ink,#161916)">Leaderboard</button>
+  </div>
+  <div style="display:flex;justify-content:space-between;align-items:center">
+    <div style="display:flex;gap:6px">
+      <sc-for list="{{ lb.periods }}" as="c" hint-placeholder-count="2">
+        <button onClick="{{ c.on }}" style="height:30px;padding:0 14px;border-radius:999px;font:inherit;font-size:12px;cursor:pointer;border:1px solid {{ c.bd }};background:{{ c.bg }};color:{{ c.fg }}">{{ c.label }}</button>
+      </sc-for>
+    </div>
+    <div style="font-size:12px;color:var(--muted,#767a73)">{{ lb.ends }}</div>
+  </div>
+  <div style="background:var(--hero,#13261a);border-radius:16px;padding:18px 14px 14px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;align-items:end;color:#fff">
+    <sc-for list="{{ lb.podium }}" as="p" hint-placeholder-count="3">
+      <div style="display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center">
+        <div style="width:44px;height:44px;border-radius:50%;background:{{ p.avBg }};color:#15260c;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600">{{ p.ini }}</div>
+        <div style="font-size:13px">{{ p.first }}</div>
+        <div style="width:100%;border-radius:10px 10px 4px 4px;background:rgba(255,255,255,.08);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;height:{{ p.h }}">
+          <div style="font-size:18px;color:#c3f03f;font-weight:500">{{ p.rank }}</div>
+          <div style="font-size:11px;color:#b9c4bb">{{ p.pts }} pts</div>
+        </div>
+      </div>
+    </sc-for>
+  </div>
+  <div style="background:var(--card,#fff);border:1px solid var(--line,#e8e8e3);border-radius:14px;overflow:hidden">
+    <sc-for list="{{ lb.rows }}" as="r" hint-placeholder-count="6">
+      <div style="display:flex;align-items:center;gap:12px;padding:11px 14px;border-bottom:1px solid var(--line,#f0f0ec);background:{{ r.bg }}">
+        <div style="width:18px;font-family:'Geist Mono',monospace;font-size:12px;color:var(--muted,#767a73)">{{ r.rank }}</div>
+        <div style="width:32px;height:32px;border-radius:50%;background:var(--tint,#eef8d6);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:500;flex:none">{{ r.ini }}</div>
+        <div style="flex:1;min-width:0"><div style="font-size:14px">{{ r.name }}</div><div style="font-size:11px;color:var(--muted,#767a73);margin-top:1px">{{ r.detail }}</div></div>
+        <div style="font-size:14px;font-weight:500">{{ r.pts }}</div>
+      </div>
+    </sc-for>
+  </div>
+  <div style="font-size:13px;color:var(--accent,#2c8a4b)">{{ lb.gap }}</div>
+  <div style="font-size:19px;font-weight:500;margin-top:6px">How to earn points</div>
+  <div style="background:var(--card,#fff);border:1px solid var(--line,#e8e8e3);border-radius:14px;padding:4px 16px">
+    <div style="display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--line,#f0f0ec);font-size:14px"><span>Check in to a studio class</span><span style="color:var(--accent,#2c8a4b);font-weight:500">+10</span></div>
+    <div style="display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--line,#f0f0ec);font-size:14px"><span>Attend a community meetup</span><span style="color:var(--accent,#2c8a4b);font-weight:500">+15</span></div>
+    <div style="display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--line,#f0f0ec);font-size:14px"><span>Hit your weekly goal</span><span style="color:var(--accent,#2c8a4b);font-weight:500">+20</span></div>
+    <div style="display:flex;justify-content:space-between;padding:12px 0;font-size:14px"><span>Bring a friend to their first class</span><span style="color:var(--accent,#2c8a4b);font-weight:500">+25</span></div>
+  </div>
+  <div style="font-size:19px;font-weight:500;margin-top:6px">{{ lb.prizeTitle }}</div>
+  <sc-for list="{{ lb.prizes }}" as="p" hint-placeholder-count="3">
+    <div style="display:flex;align-items:center;gap:12px;background:{{ p.bg }};border-radius:14px;padding:14px 16px">
+      <div style="width:34px;height:34px;border-radius:50%;background:var(--card,#fff);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;flex:none">{{ p.place }}</div>
+      <div style="flex:1"><div style="font-size:14px;font-weight:500">{{ p.title }}</div><div style="font-size:12px;color:var(--muted,#555a53);margin-top:2px">{{ p.sub }}</div></div>
+    </div>
+  </sc-for>
+  <div style="font-size:12px;color:var(--muted,#9a9d96);line-height:1.45">Points only count for verified check-ins. Meetup points are confirmed by the host.</div>
+</sc-if>
+
+<sc-if value="{{ is.store }}" hint-placeholder-val="{{ false }}">
+  <div onClick="{{ act.toggleReward }}" style="display:flex;align-items:center;gap:12px;border-radius:14px;padding:14px 16px;cursor:pointer;background:{{ shop.rwBg }};border:{{ shop.rwBd }}">
+    <div style="flex:1"><div style="font-size:14px;font-weight:500">Top 3 last week · 10% off</div><div style="font-size:12px;color:var(--muted,#555a53);margin-top:2px">Your leaderboard reward · expires Sunday</div></div>
+    <span style="font-size:13px;font-weight:500;color:var(--accent,#2c8a4b)">{{ shop.rwLabel }}</span>
+  </div>
+  <div style="display:flex;gap:6px;flex-wrap:wrap">
+    <sc-for list="{{ shop.cats }}" as="c" hint-placeholder-count="5">
+      <button onClick="{{ c.on }}" style="height:30px;padding:0 12px;border-radius:999px;font:inherit;font-size:12px;cursor:pointer;border:1px solid {{ c.bd }};background:{{ c.bg }};color:{{ c.fg }}">{{ c.label }}</button>
+    </sc-for>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+    <sc-for list="{{ shop.items }}" as="p" hint-placeholder-count="6">
+      <div style="background:var(--card,#fff);border:1px solid var(--line,#e8e8e3);border-radius:14px;padding:8px;display:flex;flex-direction:column;gap:8px">
+        <div style="height:104px;border-radius:10px;background:repeating-linear-gradient(135deg,var(--stA,#f1f1ec) 0 8px,var(--stB,#e9e9e3) 8px 16px);display:flex;align-items:center;justify-content:center;font-family:'Geist Mono',monospace;font-size:10px;color:var(--muted,#8b8f88);text-align:center;padding:0 8px">{{ p.ph }}</div>
+        <div style="padding:0 4px;display:flex;flex-direction:column;gap:2px;flex:1"><div style="font-size:13px;font-weight:500;line-height:1.3">{{ p.name }}</div><div style="font-size:11px;color:var(--muted,#767a73)">{{ p.sub }}</div></div>
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:0 4px 2px">
+          <div style="font-size:15px">${{ p.price }}</div>
+          <sc-if value="{{ p.none }}" hint-placeholder-val="{{ true }}">
+            <button onClick="{{ p.add }}" style="height:30px;padding:0 12px;border:none;border-radius:999px;background:var(--tint2,#eef6dc);color:var(--tintInk,#1d3a12);font:inherit;font-size:12px;font-weight:500;cursor:pointer">Add</button>
+          </sc-if>
+          <sc-if value="{{ p.some }}" hint-placeholder-val="{{ false }}">
+            <div style="display:flex;align-items:center;gap:8px;background:#c3f03f;border-radius:999px;height:30px;padding:0 4px">
+              <button onClick="{{ p.dec }}" style="width:24px;height:24px;border:none;border-radius:50%;background:var(--card,#fff);font:inherit;font-size:14px;cursor:pointer">−</button>
+              <span style="font-size:13px;font-weight:500">{{ p.qty }}</span>
+              <button onClick="{{ p.add }}" style="width:24px;height:24px;border:none;border-radius:50%;background:var(--card,#fff);font:inherit;font-size:14px;cursor:pointer">+</button>
+            </div>
+          </sc-if>
+        </div>
+      </div>
+    </sc-for>
+  </div>
+  <sc-if value="{{ shop.hasCart }}" hint-placeholder-val="{{ false }}">
+    <div style="background:var(--card,#fff);border:1px solid var(--line,#e8e8e3);border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:8px;font-size:14px">
+      <div style="display:flex;justify-content:space-between"><span>Subtotal · {{ shop.count }} items</span><span>${{ shop.subtotal }}</span></div>
+      <sc-if value="{{ shop.rewardOn }}" hint-placeholder-val="{{ false }}"><div style="display:flex;justify-content:space-between;color:var(--accent,#2c8a4b)"><span>Leaderboard reward (10%)</span><span>−${{ shop.discount }}</span></div></sc-if>
+      <div style="display:flex;justify-content:space-between;font-size:17px;font-weight:500;padding-top:8px;border-top:1px solid var(--line,#f0f0ec)"><span>Total</span><span>${{ shop.total }}</span></div>
+      <div style="font-size:12px;color:var(--muted,#767a73)">Pick up at the front desk after your next class.</div>
+    </div>
+    <button onClick="{{ act.buy }}" style="width:100%;height:50px;border:none;border-radius:999px;background:#c3f03f;color:#15260c;font:inherit;font-size:15px;font-weight:500;cursor:pointer">Pay ${{ shop.total }} with card on file</button>
+  </sc-if>
+</sc-if>
+
+<!-- ================= SHARED COMMUNITY ================= -->
+<sc-if value="{{ is.community }}" hint-placeholder-val="{{ false }}">
+  <div style="display:flex;gap:4px;background:var(--seg,#e6e6e0);border-radius:999px;padding:3px">
+    <button style="flex:1;height:32px;border:none;border-radius:999px;background:var(--card,#fff);font:inherit;font-size:13px;font-weight:500;cursor:pointer;color:var(--ink,#161916)">Feed</button>
+    <button onClick="{{ act.toMeetups }}" style="flex:1;height:32px;border:none;border-radius:999px;background:transparent;font:inherit;font-size:13px;cursor:pointer;color:var(--muted,#555a53)">Meetups</button>
+    <button onClick="{{ act.toLeaderboard }}" style="flex:1;height:32px;border:none;border-radius:999px;background:transparent;font:inherit;font-size:13px;cursor:pointer;color:var(--muted,#555a53)">Leaderboard</button>
+  </div>
+  <div onClick="{{ act.toPost }}" style="background:var(--card,#fff);border:1px solid var(--line,#e8e8e3);border-radius:14px;padding:14px 16px;display:flex;align-items:center;gap:12px;cursor:pointer">
+    <div style="width:36px;height:36px;border-radius:50%;background:var(--tint,#eef8d6);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:500;flex:none">{{ me.ini }}</div>
+    <div style="font-size:15px;color:var(--muted,#767a73)">Share a win or cheer someone on…</div>
+  </div>
+  <sc-for list="{{ feed }}" as="p" hint-placeholder-count="2">
+    <div style="display:flex;flex-direction:column;gap:10px;padding-bottom:10px;border-bottom:1px solid var(--line,#e6e6e0)">
+      <img src="{{ p.img }}" alt="Post photo" style="width:100%;height:200px;object-fit:cover;border-radius:16px;display:block">
+      <div style="display:flex;justify-content:space-between;align-items:center;font-size:13px;color:var(--muted,#555a53)"><span>{{ p.author }} · {{ p.ago }}</span><button onClick="{{ p.report }}" style="border:none;background:none;padding:0;font:inherit;font-size:12px;color:var(--muted,#9a9d96);cursor:pointer">Report</button></div>
+      <div style="font-size:15px;line-height:1.45;text-wrap:pretty">{{ p.text }}</div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap">
+        <sc-for list="{{ p.reactions }}" as="r" hint-placeholder-count="4">
+          <button onClick="{{ r.on }}" style="height:30px;padding:0 10px;border-radius:999px;font:inherit;font-size:13px;cursor:pointer;display:flex;align-items:center;gap:5px;border:1px solid {{ r.bd }};background:{{ r.bg }}">{{ r.e }}<span style="font-size:12px;color:var(--muted,#555a53)">{{ r.count }}</span></button>
+        </sc-for>
+      </div>
+      <sc-if value="{{ p.hasTop }}" hint-placeholder-val="{{ true }}">
+        <div style="background:var(--tint,#eef8d6);border-radius:12px;padding:10px 14px;font-size:14px;line-height:1.4"><span style="font-weight:500">{{ p.top.a }}:</span> {{ p.top.t }}</div>
+      </sc-if>
+      <button onClick="{{ p.toggle }}" style="align-self:flex-start;border:none;background:none;padding:0;font:inherit;font-size:13px;color:var(--accent,#2c8a4b);cursor:pointer">{{ p.commentLabel }}</button>
+      <sc-if value="{{ p.open }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <sc-for list="{{ p.rest }}" as="c" hint-placeholder-count="1">
+            <div style="background:var(--card,#fff);border:1px solid var(--line,#e8e8e3);border-radius:12px;padding:10px 14px;font-size:14px;line-height:1.4"><span style="font-weight:500">{{ c.a }}:</span> {{ c.t }}</div>
+          </sc-for>
+          <div style="display:flex;gap:8px">
+            <input value="{{ draft }}" onChange="{{ f.draft }}" onKeyDown="{{ act.commentKey }}" maxLength="500" placeholder="Write something encouraging…" style="flex:1;min-width:0;height:42px;border:1px solid var(--line,#e0e0da);border-radius:999px;background:var(--card,#fff);padding:0 14px;font:inherit;font-size:14px;outline:none">
+            <button onClick="{{ act.sendComment }}" style="height:42px;padding:0 16px;border:none;border-radius:999px;background:#c3f03f;font:inherit;font-size:14px;font-weight:500;cursor:pointer">Send</button>
+          </div>
+        </div>
+      </sc-if>
+    </div>
+  </sc-for>
+</sc-if>
+
+<sc-if value="{{ is.post }}" hint-placeholder-val="{{ false }}">
+  <div style="display:flex;align-items:center;gap:12px">
+    <div style="width:36px;height:36px;border-radius:50%;background:var(--tint,#eef8d6);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:500">{{ me.ini }}</div>
+    <div style="font-size:15px">{{ me.name }}</div>
+  </div>
+  <textarea value="{{ postText }}" onChange="{{ f.postText }}" placeholder="What are you proud of today?" style="width:100%;box-sizing:border-box;height:140px;border:1px solid var(--line,#e0e0da);border-radius:14px;background:var(--card,#fff);padding:14px;font:inherit;font-size:15px;resize:none;outline:none"></textarea>
+  <sc-if value="{{ postPhoto }}" hint-placeholder-val="{{ false }}">
+    <div style="position:relative">
+      <img src="assets/strength.png" alt="Attached photo" style="width:100%;height:160px;object-fit:cover;border-radius:14px;display:block">
+      <button onClick="{{ act.togglePhoto }}" style="position:absolute;top:10px;right:10px;height:28px;padding:0 12px;border:none;border-radius:999px;background:rgba(255,255,255,.92);font:inherit;font-size:12px;cursor:pointer">Remove</button>
+    </div>
+  </sc-if>
+  <sc-if value="{{ noPhoto }}" hint-placeholder-val="{{ true }}">
+    <button onClick="{{ act.togglePhoto }}" style="height:110px;border:1.5px dashed var(--line,#cfd0c9);border-radius:14px;background:transparent;font:inherit;font-size:14px;color:var(--ink,#161916);cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px">
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><rect x="2.5" y="5" width="15" height="11" rx="2.5" stroke="currentColor" stroke-width="1.5"></rect><circle cx="10" cy="10.5" r="3" stroke="currentColor" stroke-width="1.5"></circle></svg>
+      Add photo or video
+    </button>
+  </sc-if>
+  <div style="background:var(--tint,#eef8d6);border-radius:14px;padding:14px 16px;font-size:14px;color:var(--muted,#555a53);line-height:1.45">Celebrate effort. Ask before tagging. No body commentary. Only FORM Eastbank members can see posts.</div>
+  <button onClick="{{ act.share }}" style="width:100%;height:50px;border:none;border-radius:999px;background:#c3f03f;color:#15260c;font:inherit;font-size:15px;font-weight:500;cursor:pointer;opacity:{{ shareOpacity }}">Share with community</button>
+</sc-if>
+
+<sc-if value="{{ is.meetups }}" hint-placeholder-val="{{ false }}">
+  <div style="display:flex;gap:6px;flex-wrap:wrap">
+    <sc-for list="{{ mu.filters }}" as="c" hint-placeholder-count="4">
+      <button onClick="{{ c.on }}" style="height:30px;padding:0 12px;border-radius:999px;font:inherit;font-size:12px;cursor:pointer;border:1px solid {{ c.bd }};background:{{ c.bg }};color:{{ c.fg }}">{{ c.label }}</button>
+    </sc-for>
+  </div>
+  <img src="assets/meetups.png" alt="Group run in the park" style="width:100%;height:140px;object-fit:cover;border-radius:16px;display:block">
+  <sc-for list="{{ mu.list }}" as="m" hint-placeholder-count="3">
+    <div onClick="{{ m.open }}" style="display:flex;align-items:center;gap:14px;background:var(--card,#fff);border:1px solid var(--line,#e8e8e3);border-radius:14px;padding:14px 14px 14px 16px;cursor:pointer">
+      <div style="width:56px;flex:none"><div style="font-size:14px">{{ m.day }}</div><div style="font-size:11px;color:var(--muted,#767a73);margin-top:2px">{{ m.time }}</div></div>
+      <div style="flex:1;min-width:0"><div style="font-size:15px;font-weight:500">{{ m.name }}</div><div style="font-size:12px;color:var(--muted,#767a73);margin-top:3px">{{ m.sub }}</div></div>
+      <button onClick="{{ m.act }}" style="border:none;border-radius:999px;padding:6px 12px;font:inherit;font-size:12px;font-weight:500;cursor:pointer;background:{{ m.bg }};color:{{ m.fg }}">{{ m.badge }}</button>
+    </div>
+  </sc-for>
+  <button onClick="{{ act.toNewMeetup }}" style="width:100%;height:50px;border:none;border-radius:999px;background:#c3f03f;color:#15260c;font:inherit;font-size:15px;font-weight:500;cursor:pointer">Create a meetup</button>
+</sc-if>
+
+<sc-if value="{{ is.meetup }}" hint-placeholder-val="{{ false }}">
+  <img src="{{ mt.img }}" alt="Meetup photo" style="width:100%;height:170px;object-fit:cover;border-radius:16px;display:block">
+  <div style="background:var(--card,#fff);border:1px solid var(--line,#e8e8e3);border-radius:14px;padding:14px 16px;display:flex;flex-direction:column;gap:10px;font-size:14px">
+    <div style="display:flex;gap:10px"><span style="width:60px;color:var(--muted,#767a73);flex:none">Where</span>{{ mt.place }}</div>
+    <div style="display:flex;gap:10px"><span style="width:60px;color:var(--muted,#767a73);flex:none">What</span>{{ mt.detail }}</div>
+    <div style="display:flex;gap:10px"><span style="width:60px;color:var(--muted,#767a73);flex:none">After</span>{{ mt.after }}</div>
+  </div>
+  <div style="font-size:14px;color:var(--muted,#767a73);line-height:1.45">Hosted by {{ mt.host }}. Everyone is welcome; no one gets left behind.</div>
+  <div style="display:flex;align-items:center;gap:6px">
+    <sc-for list="{{ mt.avatars }}" as="a" hint-placeholder-count="4">
+      <div style="height:30px;min-width:30px;padding:0 4px;box-sizing:border-box;border-radius:999px;background:var(--tint,#eef8d6);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:500">{{ a }}</div>
+    </sc-for>
+    <span style="font-size:12px;color:var(--muted,#767a73);margin-left:4px">{{ mt.goingLabel }}</span>
+  </div>
+  <button onClick="{{ mt.join }}" style="width:100%;height:50px;border-radius:999px;font:inherit;font-size:15px;font-weight:500;cursor:pointer;background:{{ mt.joinBg }};border:{{ mt.joinBd }};color:{{ mt.joinFg }}">{{ mt.joinLabel }}</button>
+  <button onClick="{{ act.msgHost }}" style="width:100%;height:50px;border:1px solid var(--line,#e0e0da);border-radius:999px;background:var(--card,#fff);color:var(--ink,#161916);font:inherit;font-size:15px;cursor:pointer">Message host</button>
+  <div style="font-size:12px;color:var(--muted,#9a9d96);line-height:1.45">Community-organised activity. Participants join at their own responsibility; FORM Studio doesn't supervise meetups outside the studio.</div>
+</sc-if>
+
+<sc-if value="{{ is.newmeetup }}" hint-placeholder-val="{{ false }}">
+  <div style="display:flex;flex-direction:column;gap:6px"><div style="font-size:11px;letter-spacing:.04em;text-transform:uppercase;color:var(--muted,#6e726b)">Meetup name</div><input value="{{ nm.name }}" onChange="{{ f.nm_name }}" placeholder="Saturday social cycle" style="width:100%;box-sizing:border-box;height:48px;border:1px solid var(--line,#e0e0da);border-radius:12px;background:var(--card,#fff);padding:0 14px;font:inherit;font-size:15px;outline:none"></div>
+  <div style="display:flex;flex-direction:column;gap:6px"><div style="font-size:11px;letter-spacing:.04em;text-transform:uppercase;color:var(--muted,#6e726b)">Type</div>
+    <div style="display:flex;gap:6px">
+      <sc-for list="{{ nmTypes }}" as="c" hint-placeholder-count="4">
+        <button onClick="{{ c.on }}" style="height:30px;padding:0 12px;border-radius:999px;font:inherit;font-size:12px;cursor:pointer;border:1px solid {{ c.bd }};background:{{ c.bg }};color:{{ c.fg }}">{{ c.label }}</button>
+      </sc-for>
+    </div>
+  </div>
+  <div style="display:flex;flex-direction:column;gap:6px"><div style="font-size:11px;letter-spacing:.04em;text-transform:uppercase;color:var(--muted,#6e726b)">Date &amp; time</div><input value="{{ nm.date }}" onChange="{{ f.nm_date }}" placeholder="Saturday 16 May · 09:00" style="width:100%;box-sizing:border-box;height:48px;border:1px solid var(--line,#e0e0da);border-radius:12px;background:var(--card,#fff);padding:0 14px;font:inherit;font-size:15px;outline:none"></div>
+  <div style="display:flex;flex-direction:column;gap:6px"><div style="font-size:11px;letter-spacing:.04em;text-transform:uppercase;color:var(--muted,#6e726b)">Meeting point</div><input value="{{ nm.place }}" onChange="{{ f.nm_place }}" placeholder="FORM Studio entrance" style="width:100%;box-sizing:border-box;height:48px;border:1px solid var(--line,#e0e0da);border-radius:12px;background:var(--card,#fff);padding:0 14px;font:inherit;font-size:15px;outline:none"></div>
+  <div style="display:flex;flex-direction:column;gap:6px"><div style="font-size:11px;letter-spacing:.04em;text-transform:uppercase;color:var(--muted,#6e726b)">Capacity (optional)</div><input value="{{ nm.cap }}" onChange="{{ f.nm_cap }}" inputMode="numeric" placeholder="12" style="width:100%;box-sizing:border-box;height:48px;border:1px solid var(--line,#e0e0da);border-radius:12px;background:var(--card,#fff);padding:0 14px;font:inherit;font-size:15px;outline:none"></div>
+  <textarea value="{{ nm.notes }}" onChange="{{ f.nm_notes }}" placeholder="Easy 15 km loop. Helmets required. No-drop ride." style="width:100%;box-sizing:border-box;height:90px;border:1px solid var(--line,#e0e0da);border-radius:14px;background:var(--card,#fff);padding:14px;font:inherit;font-size:15px;resize:none;outline:none"></textarea>
+  <div style="font-size:12px;color:#c9562c">{{ nmErr }}</div>
+  <button onClick="{{ act.publish }}" style="width:100%;height:50px;border:none;border-radius:999px;background:#c3f03f;color:#15260c;font:inherit;font-size:15px;font-weight:500;cursor:pointer">Publish meetup</button>
+</sc-if>
+
+<!-- ================= COACH ================= -->
+<sc-if value="{{ is.c_home }}" hint-placeholder-val="{{ false }}">
+  <div onClick="{{ coach.openNext }}" style="background:var(--hero,#13261a);border-radius:16px;padding:18px;color:#fff;cursor:pointer">
+    <div style="font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:#c3f03f">Next class · 12:15</div>
+    <div style="font-size:21px;font-weight:500;margin-top:6px">Reformer Flow</div>
+    <div style="font-size:13px;color:#b9c4bb;margin-top:4px">Studio B · 10 booked · 4 waitlist</div>
+  </div>
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px">
+    <div style="background:var(--card,#fff);border:1px solid var(--line,#e8e8e3);border-radius:14px;padding:12px"><div style="font-size:11px;letter-spacing:.04em;text-transform:uppercase;color:var(--muted,#6e726b)">Today</div><div style="font-size:22px;margin-top:6px">2</div></div>
+    <div style="background:var(--card,#fff);border:1px solid var(--line,#e8e8e3);border-radius:14px;padding:12px"><div style="font-size:11px;letter-spacing:.04em;text-transform:uppercase;color:var(--muted,#6e726b)">This week</div><div style="font-size:22px;margin-top:6px">18</div></div>
+    <div style="background:var(--card,#fff);border:1px solid var(--line,#e8e8e3);border-radius:14px;padding:12px"><div style="font-size:11px;letter-spacing:.04em;text-transform:uppercase;color:var(--muted,#6e726b)">Checked in</div><div style="font-size:22px;margin-top:6px">{{ checkedIn }}</div></div>
+  </div>
+  <div onClick="{{ act.toPrograms }}" style="display:flex;align-items:center;gap:12px;background:var(--tint,#eef8d6);border-radius:14px;padding:14px 16px;cursor:pointer">
+    <div style="flex:1"><div style="font-size:15px;font-weight:500">Workout plans</div><div style="font-size:12px;color:var(--muted,#555a53);margin-top:2px">Build and refine sessions with the AI assistant</div></div>
+    <span style="font-size:13px;color:var(--accent,#2c8a4b)">Open</span>
+  </div>
+  <div style="font-size:19px;font-weight:500;margin-top:6px">Today's classes</div>
+  <sc-for list="{{ coach.today }}" as="c" hint-placeholder-count="2">
+    <div onClick="{{ c.open }}" style="display:flex;align-items:center;gap:14px;background:var(--card,#fff);border:1px solid var(--line,#e8e8e3);border-radius:14px;padding:14px 14px 14px 16px;cursor:pointer">
+      <div style="width:52px;flex:none"><div style="font-size:14px">{{ c.t }}</div><div style="font-size:11px;color:var(--muted,#767a73);margin-top:2px">50 min</div></div>
+      <div style="flex:1;min-width:0"><div style="font-size:15px;font-weight:500">{{ c.n }}</div><div style="font-size:12px;color:var(--muted,#767a73);margin-top:3px">{{ c.sub }}</div></div>
+      <button onClick="{{ c.act }}" style="border:none;border-radius:999px;padding:6px 12px;font:inherit;font-size:12px;font-weight:500;background:var(--tint2,#e2f5c4);color:var(--tintInk,#1d3a12);cursor:pointer">Roster</button>
+    </div>
+  </sc-for>
+</sc-if>
+
+<sc-if value="{{ is.c_schedule }}" hint-placeholder-val="{{ false }}">
+  <div style="display:flex;gap:6px">
+    <sc-for list="{{ coach.days }}" as="d" hint-placeholder-count="5">
+      <button onClick="{{ d.on }}" style="flex:1;height:32px;border-radius:999px;font:inherit;font-size:12px;cursor:pointer;border:1px solid {{ d.bd }};background:{{ d.bg }};color:{{ d.fg }}">{{ d.label }}</button>
+    </sc-for>
+  </div>
+  <sc-for list="{{ coach.week }}" as="c" hint-placeholder-count="3">
+    <div onClick="{{ c.open }}" style="display:flex;align-items:center;gap:14px;background:var(--card,#fff);border:1px solid var(--line,#e8e8e3);border-radius:14px;padding:14px 14px 14px 16px;cursor:pointer">
+      <div style="width:52px;flex:none"><div style="font-size:14px">{{ c.t }}</div><div style="font-size:11px;color:var(--muted,#767a73);margin-top:2px">50 min</div></div>
+      <div style="flex:1;min-width:0"><div style="font-size:15px;font-weight:500">{{ c.n }}</div><div style="font-size:12px;color:var(--muted,#767a73);margin-top:3px">{{ c.sub }}</div></div>
+      <span style="border-radius:999px;padding:6px 12px;font-size:12px;font-weight:500;background:{{ c.bg }};color:{{ c.fg }}">{{ c.badge }}</span>
+    </div>
+  </sc-for>
+</sc-if>
+
+<sc-if value="{{ is.c_class }}" hint-placeholder-val="{{ false }}">
+  <div style="background:var(--tint,#eef8d6);border-radius:16px;padding:18px">
+    <div style="font-size:20px">{{ cc.headline }}</div>
+    <div style="font-size:14px;color:var(--muted,#555a53);margin-top:6px">{{ cc.studio }} · 50 minutes · All levels</div>
+  </div>
+  <div style="display:flex;justify-content:space-between;align-items:baseline;margin-top:4px"><div style="font-size:19px;font-weight:500">Session plan</div><button onClick="{{ act.togglePlanEdit }}" style="border:none;background:none;padding:0;font:inherit;font-size:13px;color:var(--accent,#2c8a4b);cursor:pointer">{{ planEditLabel }}</button></div>
+  <sc-for list="{{ sessionPlan }}" as="s" hint-placeholder-count="4">
+    <sc-if value="{{ s.editing }}" hint-placeholder-val="{{ false }}">
+      <input value="{{ s.text }}" onChange="{{ s.onChange }}" style="width:100%;box-sizing:border-box;height:42px;border:1px solid var(--line,#e0e0da);border-radius:10px;background:var(--card,#fff);padding:0 12px;font:inherit;font-size:14px;outline:none">
+    </sc-if>
+    <sc-if value="{{ s.viewing }}" hint-placeholder-val="{{ true }}">
+      <div style="font-size:15px;line-height:1.4">{{ s.num }}. {{ s.text }}</div>
+    </sc-if>
+  </sc-for>
+  <div style="background:var(--card,#fff);border:1px solid var(--line,#e8e8e3);border-radius:14px;padding:14px 16px;font-size:14px;color:var(--muted,#767a73);line-height:1.45">Maya: offer elevated push-up. Ari: first class — demo each station.</div>
+  <button onClick="{{ act.openBuilderP1 }}" style="width:100%;height:50px;border:1px solid var(--line,#e0e0da);border-radius:999px;background:var(--card,#fff);color:var(--ink,#161916);font:inherit;font-size:15px;cursor:pointer">Refine in plan builder</button>
+  <button onClick="{{ act.toCheckin }}" style="width:100%;height:50px;border:none;border-radius:999px;background:#c3f03f;color:#15260c;font:inherit;font-size:15px;font-weight:500;cursor:pointer">Open roster</button>
+</sc-if>
+
+<sc-if value="{{ is.c_programs }}" hint-placeholder-val="{{ false }}">
+  <div style="font-size:14px;color:var(--muted,#767a73);line-height:1.45">Your plan library. Pick exercises, structure the session, and let the AI assistant draft or refine it.</div>
+  <sc-for list="{{ progs }}" as="p" hint-placeholder-count="3">
+    <div onClick="{{ p.open }}" style="background:var(--card,#fff);border:1px solid var(--line,#e8e8e3);border-radius:14px;padding:14px 16px;cursor:pointer;display:flex;align-items:center;gap:12px">
+      <div style="flex:1;min-width:0"><div style="font-size:15px;font-weight:500">{{ p.name }}</div><div style="font-size:12px;color:var(--muted,#767a73);margin-top:3px">{{ p.meta }}</div></div>
+      <span style="border-radius:999px;padding:6px 12px;font-size:12px;font-weight:500;background:var(--tint2,#e2f5c4);color:var(--tintInk,#1d3a12)">{{ p.focus }}</span>
+    </div>
+  </sc-for>
+  <button onClick="{{ act.newPlan }}" style="width:100%;height:50px;border:none;border-radius:999px;background:#c3f03f;color:#15260c;font:inherit;font-size:15px;font-weight:500;cursor:pointer">New plan with AI</button>
+</sc-if>
+
+<sc-if value="{{ is.c_builder }}" hint-placeholder-val="{{ false }}">
+  <div style="display:flex;flex-direction:column;gap:4px">
+    <input value="{{ bp.name }}" onChange="{{ f.bp_name }}" style="width:100%;box-sizing:border-box;border:none;border-bottom:1px solid var(--line,#e0e0da);padding:2px 0 10px;font:inherit;font-size:20px;font-weight:500;outline:none;background:transparent;color:var(--ink,#161916)">
+    <div style="font-size:13px;color:var(--muted,#767a73);padding-top:4px">{{ bp.meta }}</div>
+  </div>
+
+  <div style="background:var(--tint,#eef8d6);border-radius:16px;padding:14px;display:flex;flex-direction:column;gap:10px">
+    <div style="font-size:15px;font-weight:500">✦ Ask AI</div>
+    <div style="display:flex;gap:8px">
+      <input value="{{ aiPrompt }}" onChange="{{ f.aiPrompt }}" onKeyDown="{{ act.aiKey }}" placeholder="What should change? e.g. easier for beginners" style="flex:1;min-width:0;height:44px;border:1px solid var(--line,#d6e6bd);border-radius:999px;background:var(--card,#fff);padding:0 16px;font:inherit;font-size:14px;outline:none">
+      <button onClick="{{ act.aiSend }}" style="height:44px;padding:0 18px;border:none;border-radius:999px;background:#c3f03f;color:#15260c;font:inherit;font-size:14px;font-weight:500;cursor:pointer">Send</button>
+    </div>
+    <div style="display:flex;gap:6px;flex-wrap:wrap">
+      <sc-for list="{{ aiChips }}" as="c" hint-placeholder-count="3">
+        <button onClick="{{ c.on }}" style="height:32px;padding:0 12px;border-radius:999px;font:inherit;font-size:13px;cursor:pointer;border:1px solid var(--line,#d6e6bd);background:var(--card,#fff);color:var(--tintInk,#1d3a12)">{{ c.label }}</button>
+      </sc-for>
+    </div>
+    <sc-if value="{{ aiBusy }}" hint-placeholder-val="{{ false }}">
+      <div style="display:flex;align-items:center;gap:10px;font-size:13px;color:var(--muted,#555a53)"><span style="width:14px;height:14px;border:2px solid #2c8a4b;border-right-color:transparent;border-radius:50%;animation:spin .7s linear infinite"></span>{{ aiBusyLabel }}</div>
+    </sc-if>
+    <sc-if value="{{ hasAiSummary }}" hint-placeholder-val="{{ false }}">
+      <div style="background:var(--card,#fff);border-radius:12px;padding:12px 14px;display:flex;flex-direction:column;gap:8px">
+        <div style="font-size:14px;line-height:1.45">{{ aiSummary }}</div>
+        <button onClick="{{ act.aiUndo }}" style="align-self:flex-start;border:none;background:none;padding:0;font:inherit;font-size:13px;color:var(--accent,#2c8a4b);cursor:pointer">{{ undoLabel }}</button>
+      </div>
+    </sc-if>
+    <div style="font-size:12px;color:var(--muted,#6e726b)">Suggestions are a draft — you make the final call.</div>
+  </div>
+
+  <div style="font-size:13px;color:var(--muted,#767a73)">Tap an exercise to edit, swap or remove it.</div>
+  <sc-for list="{{ bp.blocks }}" as="b" hint-placeholder-count="4">
+    <div style="display:flex;flex-direction:column;gap:6px">
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:4px 2px 0">
+        <div style="font-size:15px;font-weight:500">{{ b.name }}</div>
+        <button onClick="{{ b.toggleAdd }}" style="border:none;background:none;padding:0;font:inherit;font-size:13px;color:var(--accent,#2c8a4b);cursor:pointer">{{ b.addLabel }}</button>
+      </div>
+      <sc-if value="{{ b.empty }}" hint-placeholder-val="{{ false }}">
+        <div style="border:1px dashed var(--line,#d6d6d0);border-radius:12px;padding:12px 14px;font-size:13px;color:var(--muted,#9a9d96)">No exercises yet</div>
+      </sc-if>
+      <sc-for list="{{ b.items }}" as="it" hint-placeholder-count="2">
+        <div style="background:var(--card,#fff);border-radius:12px;border:1px solid {{ it.bd }}">
+          <div onClick="{{ it.toggle }}" style="display:flex;align-items:center;gap:10px;padding:13px 14px;cursor:pointer">
+            <div style="flex:1;min-width:0;font-size:15px">{{ it.name }}</div>
+            <div style="font-size:13px;color:var(--muted,#767a73)">{{ it.dose }}</div>
+          </div>
+          <sc-if value="{{ it.open }}" hint-placeholder-val="{{ false }}">
+            <div style="padding:0 14px 12px;display:flex;flex-direction:column;gap:8px">
+              <div style="display:flex;align-items:center;gap:8px">
+                <span style="font-size:12px;color:var(--muted,#767a73)">Sets × reps</span>
+                <input value="{{ it.dose }}" onChange="{{ it.onDose }}" style="width:84px;height:32px;box-sizing:border-box;border:1px solid var(--line,#e0e0da);border-radius:8px;padding:0 8px;font:inherit;font-size:13px;text-align:center;outline:none">
+                <div style="flex:1"></div>
+                <button onClick="{{ it.swap }}" style="height:32px;padding:0 12px;border:none;border-radius:999px;background:var(--tint2,#eef6dc);color:var(--tintInk,#1d3a12);font:inherit;font-size:13px;font-weight:500;cursor:pointer">Swap</button>
+                <button onClick="{{ it.remove }}" style="height:32px;padding:0 12px;border:1px solid var(--line,#e0e0da);border-radius:999px;background:var(--card,#fff);color:#c9562c;font:inherit;font-size:13px;cursor:pointer">Remove</button>
+              </div>
+              <sc-if value="{{ it.swapLoading }}" hint-placeholder-val="{{ false }}">
+                <div style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted,#767a73)"><span style="width:12px;height:12px;border:2px solid #2c8a4b;border-right-color:transparent;border-radius:50%;animation:spin .7s linear infinite"></span>Finding alternatives…</div>
+              </sc-if>
+              <sc-for list="{{ it.options }}" as="o" hint-placeholder-count="0">
+                <div onClick="{{ o.use }}" style="display:flex;align-items:center;gap:10px;background:var(--tint,#f7f9f1);border-radius:10px;padding:10px 12px;cursor:pointer">
+                  <div style="flex:1;min-width:0"><div style="font-size:14px">{{ o.name }} · <span style="color:var(--muted,#767a73)">{{ o.dose }}</span></div><div style="font-size:12px;color:var(--muted,#555a53);margin-top:2px">{{ o.why }}</div></div>
+                  <span style="font-size:13px;color:var(--accent,#2c8a4b);font-weight:500">Use</span>
+                </div>
+              </sc-for>
+            </div>
+          </sc-if>
+        </div>
+      </sc-for>
+      <sc-if value="{{ b.adding }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;gap:6px;flex-wrap:wrap">
+          <sc-for list="{{ b.library }}" as="l" hint-placeholder-count="4">
+            <button onClick="{{ l.on }}" style="height:32px;padding:0 12px;border-radius:999px;font:inherit;font-size:13px;cursor:pointer;border:1px dashed #b9c9a5;background:var(--card,#fff);color:var(--tintInk,#1d3a12)">+ {{ l.name }}</button>
+          </sc-for>
+        </div>
+      </sc-if>
+    </div>
+  </sc-for>
+
+  <button onClick="{{ act.savePlan }}" style="width:100%;height:50px;border:none;border-radius:999px;background:#c3f03f;color:#15260c;font:inherit;font-size:15px;font-weight:500;cursor:pointer;margin-top:6px">Save plan</button>
+  <button onClick="{{ act.assignPlan }}" style="width:100%;height:50px;border:1px solid var(--line,#e0e0da);border-radius:999px;background:var(--card,#fff);color:var(--ink,#161916);font:inherit;font-size:15px;cursor:pointer">Use for Strength Foundations · 18:00</button>
+</sc-if>
+
+<sc-if value="{{ is.c_checkin }}" hint-placeholder-val="{{ false }}">
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+    <div style="background:var(--card,#fff);border:1px solid var(--line,#e8e8e3);border-radius:14px;padding:14px"><div style="font-size:11px;letter-spacing:.04em;text-transform:uppercase;color:var(--muted,#6e726b)">Checked in</div><div style="font-size:24px;margin-top:6px">{{ checkedIn }} / {{ attendeeCount }}</div></div>
+    <div style="background:var(--card,#fff);border:1px solid var(--line,#e8e8e3);border-radius:14px;padding:14px"><div style="font-size:11px;letter-spacing:.04em;text-transform:uppercase;color:var(--muted,#6e726b)">Waitlist</div><div style="font-size:24px;margin-top:6px">0</div></div>
+  </div>
+  <div style="font-size:12px;color:var(--muted,#767a73)">Tap a status to check someone in. Tap a name for notes.</div>
+  <sc-for list="{{ attendees }}" as="a" hint-placeholder-count="5">
+    <div style="display:flex;align-items:center;gap:12px;padding:4px 0">
+      <div style="width:38px;height:38px;border-radius:50%;background:var(--tint,#eef8d6);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:500;flex:none">{{ a.ini }}</div>
+      <div onClick="{{ a.openNotes }}" style="flex:1;min-width:0;cursor:pointer"><div style="font-size:15px">{{ a.name }}</div><div style="font-size:12px;color:var(--muted,#767a73);margin-top:2px">{{ a.sub }}</div></div>
+      <button onClick="{{ a.toggle }}" style="border:none;background:none;padding:6px 0;font:inherit;font-size:13px;cursor:pointer;color:{{ a.color }}">{{ a.status }}</button>
+    </div>
+  </sc-for>
+  <button onClick="{{ act.startClass }}" style="width:100%;height:50px;border:none;border-radius:999px;background:#c3f03f;color:#15260c;font:inherit;font-size:15px;font-weight:500;cursor:pointer">{{ startLabel }}</button>
+</sc-if>
+
+<sc-if value="{{ is.c_notes }}" hint-placeholder-val="{{ false }}">
+  <div style="display:flex;align-items:center;gap:14px">
+    <div style="width:52px;height:52px;border-radius:50%;background:var(--tint,#eef8d6);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:500">{{ member.ini }}</div>
+    <div><div style="font-size:20px">{{ member.name }}</div><div style="font-size:12px;color:var(--muted,#767a73);margin-top:2px">{{ member.meta }}</div></div>
+  </div>
+  <div style="background:var(--warn,#fdf0e2);border-radius:14px;padding:14px 16px">
+    <div style="font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:#c9711f">Coach-only note</div>
+    <div style="font-size:15px;line-height:1.45;margin-top:6px">{{ member.pinned }}</div>
+  </div>
+  <div style="font-size:19px;font-weight:500;margin-top:6px">Recent coaching notes</div>
+  <sc-for list="{{ member.notes }}" as="n" hint-placeholder-count="2">
+    <div style="font-size:15px;line-height:1.45">{{ n }}</div>
+  </sc-for>
+  <textarea value="{{ noteDraft }}" onChange="{{ f.noteDraft }}" placeholder="Add a private coaching note…" style="width:100%;box-sizing:border-box;height:100px;border:1px solid var(--line,#e0e0da);border-radius:14px;background:var(--card,#fff);padding:14px;font:inherit;font-size:15px;resize:none;outline:none"></textarea>
+  <button onClick="{{ act.saveNote }}" style="width:100%;height:50px;border:none;border-radius:999px;background:#c3f03f;color:#15260c;font:inherit;font-size:15px;font-weight:500;cursor:pointer">Save note</button>
+  <div style="display:flex;gap:6px;flex-wrap:wrap">
+    <sc-for list="{{ memberSwitch }}" as="m" hint-placeholder-count="5">
+      <button onClick="{{ m.on }}" style="height:30px;padding:0 12px;border-radius:999px;font:inherit;font-size:12px;cursor:pointer;border:1px solid {{ m.bd }};background:{{ m.bg }};color:{{ m.fg }}">{{ m.label }}</button>
+    </sc-for>
+  </div>
+</sc-if>
+
+<!-- ================= OWNER ================= -->
+<sc-if value="{{ is.o_overview }}" hint-placeholder-val="{{ false }}">
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+    <sc-for list="{{ kpis }}" as="k" hint-placeholder-count="4">
+      <div style="background:var(--card,#fff);border:1px solid var(--line,#e8e8e3);border-radius:14px;padding:14px"><div style="font-size:11px;letter-spacing:.04em;text-transform:uppercase;color:var(--muted,#6e726b)">{{ k.l }}</div><div style="font-size:24px;margin-top:6px">{{ k.v }}</div><div style="font-size:12px;color:var(--accent,#2c8a4b);margin-top:4px">{{ k.d }}</div></div>
+    </sc-for>
+  </div>
+  <div style="display:flex;justify-content:space-between;align-items:baseline;margin-top:6px"><div style="font-size:19px;font-weight:500">Needs attention</div><div style="font-size:13px;color:var(--accent,#2c8a4b)">{{ alertCount }} alerts</div></div>
+  <sc-for list="{{ alerts }}" as="a" hint-placeholder-count="3">
+    <div onClick="{{ a.on }}" style="display:flex;gap:12px;border-radius:14px;padding:14px 16px;cursor:pointer;background:{{ a.bg }}">
+      <div style="width:20px;height:20px;border-radius:50%;border:1.6px solid {{ a.ic }};color:{{ a.ic }};display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;flex:none;margin-top:1px">{{ a.glyph }}</div>
+      <div style="flex:1"><div style="font-size:14px;font-weight:500">{{ a.title }}</div><div style="font-size:12px;color:var(--muted,#555a53);margin-top:3px">{{ a.sub }}</div></div>
+      <span style="font-size:12px;color:{{ a.ic }};align-self:center">{{ a.cta }}</span>
+    </div>
+  </sc-for>
+</sc-if>
+
+<sc-if value="{{ is.o_schedule }}" hint-placeholder-val="{{ false }}">
+  <div style="display:flex;gap:6px">
+    <sc-for list="{{ os.filters }}" as="c" hint-placeholder-count="3">
+      <button onClick="{{ c.on }}" style="height:30px;padding:0 12px;border-radius:999px;font:inherit;font-size:12px;cursor:pointer;border:1px solid {{ c.bd }};background:{{ c.bg }};color:{{ c.fg }}">{{ c.label }}</button>
+    </sc-for>
+  </div>
+  <div style="display:flex;gap:6px">
+    <sc-for list="{{ os.days }}" as="d" hint-placeholder-count="5">
+      <button onClick="{{ d.on }}" style="flex:1;height:32px;border-radius:999px;font:inherit;font-size:12px;cursor:pointer;border:1px solid {{ d.bd }};background:{{ d.bg }};color:{{ d.fg }}">{{ d.label }}</button>
+    </sc-for>
+  </div>
+  <sc-for list="{{ os.list }}" as="c" hint-placeholder-count="4">
+    <div onClick="{{ c.open }}" style="display:flex;align-items:center;gap:14px;background:var(--card,#fff);border:1px solid var(--line,#e8e8e3);border-radius:14px;padding:14px 14px 14px 16px;cursor:pointer">
+      <div style="width:52px;flex:none"><div style="font-size:14px">{{ c.t }}</div><div style="font-size:11px;color:var(--muted,#767a73);margin-top:2px">50 min</div></div>
+      <div style="flex:1;min-width:0"><div style="font-size:15px;font-weight:500">{{ c.n }}</div><div style="font-size:12px;color:var(--muted,#767a73);margin-top:3px">{{ c.sub }}</div></div>
+      <span style="border-radius:999px;padding:6px 12px;font-size:12px;font-weight:500;background:{{ c.bg }};color:{{ c.fg }}">{{ c.badge }}</span>
+    </div>
+  </sc-for>
+  <button onClick="{{ act.toManage }}" style="width:100%;height:50px;border:none;border-radius:999px;background:#c3f03f;color:#15260c;font:inherit;font-size:15px;font-weight:500;cursor:pointer">Manage classes</button>
+</sc-if>
+
+<sc-if value="{{ is.o_manage }}" hint-placeholder-val="{{ false }}">
+  <div style="display:flex;justify-content:space-between;align-items:baseline"><div style="font-size:19px;font-weight:500">{{ manageCount }} scheduled</div><button onClick="{{ act.addClass }}" style="border:none;background:none;padding:0;font:inherit;font-size:13px;color:var(--accent,#2c8a4b);cursor:pointer">+ Add</button></div>
+  <sc-for list="{{ manage }}" as="c" hint-placeholder-count="4">
+    <div style="display:flex;align-items:center;gap:14px;background:var(--card,#fff);border-radius:14px;padding:14px 14px 14px 16px;border:{{ c.bd }}">
+      <div style="width:52px;flex:none"><div style="font-size:14px">{{ c.t }}</div><div style="font-size:11px;color:var(--muted,#767a73);margin-top:2px">50 min</div></div>
+      <div style="flex:1;min-width:0"><div style="font-size:15px;font-weight:500">{{ c.n }}</div><div style="font-size:12px;color:var(--muted,#767a73);margin-top:3px">{{ c.sub }}</div></div>
+      <button onClick="{{ c.edit }}" style="border:none;border-radius:999px;padding:6px 12px;font:inherit;font-size:12px;font-weight:500;background:var(--tint2,#e2f5c4);color:var(--tintInk,#1d3a12);cursor:pointer">Edit</button>
+    </div>
+  </sc-for>
+  <div style="background:var(--card,#fff);border:1px solid var(--line,#e8e8e3);border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:10px">
+    <div style="font-size:19px">{{ editTitle }}</div>
+    <input value="{{ edit.n }}" onChange="{{ f.e_n }}" placeholder="Class name" style="width:100%;box-sizing:border-box;height:44px;border:1px solid var(--line,#e0e0da);border-radius:10px;padding:0 12px;font:inherit;font-size:14px;outline:none">
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">
+      <input value="{{ edit.t }}" onChange="{{ f.e_t }}" placeholder="19:15" style="width:100%;box-sizing:border-box;height:44px;border:1px solid var(--line,#e0e0da);border-radius:10px;padding:0 12px;font:inherit;font-size:14px;outline:none">
+      <input value="{{ edit.coach }}" onChange="{{ f.e_coach }}" placeholder="Coach" style="width:100%;box-sizing:border-box;height:44px;border:1px solid var(--line,#e0e0da);border-radius:10px;padding:0 12px;font:inherit;font-size:14px;outline:none">
+      <input value="{{ edit.cap }}" onChange="{{ f.e_cap }}" placeholder="Capacity" style="width:100%;box-sizing:border-box;height:44px;border:1px solid var(--line,#e0e0da);border-radius:10px;padding:0 12px;font:inherit;font-size:14px;outline:none">
+    </div>
+    <div style="display:flex;gap:8px;margin-top:4px">
+      <button onClick="{{ act.saveClass }}" style="flex:1;height:46px;border:none;border-radius:999px;background:#c3f03f;color:#15260c;font:inherit;font-size:15px;font-weight:500;cursor:pointer">Save changes</button>
+      <sc-if value="{{ canCancelClass }}" hint-placeholder-val="{{ true }}">
+        <button onClick="{{ act.cancelClass }}" style="flex:1;height:46px;border:1px solid var(--line,#e0e0da);border-radius:999px;background:var(--card,#fff);font:inherit;font-size:15px;cursor:pointer">Cancel class</button>
+      </sc-if>
+    </div>
+  </div>
+</sc-if>
+
+<sc-if value="{{ is.o_roster }}" hint-placeholder-val="{{ false }}">
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px">
+    <div style="background:var(--card,#fff);border:1px solid var(--line,#e8e8e3);border-radius:14px;padding:12px"><div style="font-size:11px;letter-spacing:.04em;text-transform:uppercase;color:var(--muted,#6e726b)">Booked</div><div style="font-size:22px;margin-top:6px">{{ roster.booked }}</div></div>
+    <div style="background:var(--card,#fff);border:1px solid var(--line,#e8e8e3);border-radius:14px;padding:12px"><div style="font-size:11px;letter-spacing:.04em;text-transform:uppercase;color:var(--muted,#6e726b)">Waitlist</div><div style="font-size:22px;margin-top:6px">{{ roster.wait }}</div></div>
+    <div style="background:var(--card,#fff);border:1px solid var(--line,#e8e8e3);border-radius:14px;padding:12px"><div style="font-size:11px;letter-spacing:.04em;text-transform:uppercase;color:var(--muted,#6e726b)">Checked in</div><div style="font-size:22px;margin-top:6px">{{ checkedIn }}</div></div>
+  </div>
+  <div style="display:flex;justify-content:space-between;align-items:baseline;margin-top:4px"><div style="font-size:19px;font-weight:500">Attendees</div><button onClick="{{ act.msgAll }}" style="border:none;background:none;padding:0;font:inherit;font-size:13px;color:var(--accent,#2c8a4b);cursor:pointer">Message all</button></div>
+  <sc-for list="{{ attendees }}" as="a" hint-placeholder-count="5">
+    <div style="display:flex;align-items:center;gap:12px;padding:4px 0">
+      <div style="width:38px;height:38px;border-radius:50%;background:var(--tint,#eef8d6);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:500;flex:none">{{ a.ini }}</div>
+      <div style="flex:1;min-width:0"><div style="font-size:15px">{{ a.name }}</div><div style="font-size:12px;color:var(--muted,#767a73);margin-top:2px">{{ a.visits }}</div></div>
+      <button onClick="{{ a.toggle }}" style="border:none;background:none;padding:6px 0;font:inherit;font-size:13px;cursor:pointer;color:{{ a.color }}">{{ a.status }}</button>
+    </div>
+  </sc-for>
+  <button onClick="{{ act.checkAll }}" style="width:100%;height:50px;border:none;border-radius:999px;background:#c3f03f;color:#15260c;font:inherit;font-size:15px;font-weight:500;cursor:pointer">Check in all present</button>
+  <div style="font-size:14px;color:var(--muted,#767a73)">Late cancel window began at 10:00.</div>
+</sc-if>
+
+<sc-if value="{{ is.o_packages }}" hint-placeholder-val="{{ false }}">
+  <sc-for list="{{ ownerPlans }}" as="p" hint-placeholder-count="3">
+    <div style="display:flex;align-items:center;justify-content:space-between;border-radius:14px;padding:14px 16px;background:{{ p.bg }};border:1px solid var(--line,#e8e8e3)">
+      <div><div style="font-size:15px">{{ p.name }}</div><div style="font-size:12px;color:var(--muted,#767a73);margin-top:3px">{{ p.members }} members</div></div>
+      <div style="font-size:20px">${{ p.price }}</div>
+    </div>
+  </sc-for>
+  <div style="font-size:19px;font-weight:500;margin-top:6px">Pricing health</div>
+  <div style="display:flex;gap:12px;background:var(--tint,#eef8d6);border-radius:14px;padding:14px 16px">
+    <div style="width:20px;height:20px;border-radius:50%;border:1.6px solid #2c8a4b;color:var(--accent,#2c8a4b);display:flex;align-items:center;justify-content:center;font-size:11px;flex:none">✓</div>
+    <div><div style="font-size:14px;font-weight:500">2/week drives 62% of MRR</div><div style="font-size:12px;color:var(--muted,#555a53);margin-top:3px">Best retention: 7.4 months average</div></div>
+  </div>
+  <button onClick="{{ act.createPackage }}" style="width:100%;height:50px;border:none;border-radius:999px;background:#c3f03f;color:#15260c;font:inherit;font-size:15px;font-weight:500;cursor:pointer">Create package</button>
+  <button onClick="{{ act.editPolicy }}" style="width:100%;height:50px;border:1px solid var(--line,#e0e0da);border-radius:999px;background:var(--card,#fff);color:var(--ink,#161916);font:inherit;font-size:15px;cursor:pointer">Edit cancellation policy</button>
+</sc-if>
+
+<sc-if value="{{ is.o_trainers }}" hint-placeholder-val="{{ false }}">
+  <sc-for list="{{ trainers }}" as="t" hint-placeholder-count="4">
+    <button onClick="{{ t.on }}" style="display:flex;align-items:center;gap:12px;width:100%;background:var(--card,#fff);border:1px solid var(--line,#e8e8e3);border-radius:14px;padding:14px 16px;font:inherit;color:var(--ink,#161916);cursor:pointer;text-align:left">
+      <div style="width:38px;height:38px;border-radius:50%;background:var(--tint,#eef8d6);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:500;flex:none">{{ t.ini }}</div>
+      <div style="flex:1"><div style="font-size:15px">{{ t.name }}</div><div style="font-size:12px;color:var(--muted,#767a73);margin-top:2px">{{ t.sub }}</div></div>
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M5 3l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+    </button>
+  </sc-for>
+  <button onClick="{{ act.addTrainer }}" style="width:100%;height:50px;border:none;border-radius:999px;background:#c3f03f;color:#15260c;font:inherit;font-size:15px;font-weight:500;cursor:pointer">Add trainer</button>
+  <button onClick="{{ act.perms }}" style="width:100%;height:50px;border:1px solid var(--line,#e0e0da);border-radius:999px;background:var(--card,#fff);color:var(--ink,#161916);font:inherit;font-size:15px;cursor:pointer">Manage permissions</button>
+</sc-if>
+
+<sc-if value="{{ is.o_settings }}" hint-placeholder-val="{{ false }}">
+  <div style="background:var(--hero,#13261a);border-radius:16px;padding:18px;color:#fff">
+    <div style="font-size:20px">FORM Studio · Eastbank</div>
+    <div style="font-size:13px;color:#b9c4bb;margin-top:6px">24 River Street · New York, NY</div>
+  </div>
+  <sc-for list="{{ settingsRows }}" as="r" hint-placeholder-count="8">
+    <button onClick="{{ r.on }}" style="display:flex;align-items:center;justify-content:space-between;width:100%;background:var(--card,#fff);border:1px solid var(--line,#e8e8e3);border-radius:14px;padding:16px;font:inherit;font-size:15px;color:var(--ink,#161916);cursor:pointer;text-align:left">{{ r.label }}<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M5 3l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path></svg></button>
+  </sc-for>
+</sc-if>
+
+<sc-if value="{{ is.o_cancelled }}" hint-placeholder-val="{{ false }}">
+  <div style="background:var(--tint,#eef8d6);border-radius:18px;padding:26px 18px;display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center">
+    <div style="width:46px;height:46px;border-radius:50%;border:2px solid #2c8a4b;display:flex;align-items:center;justify-content:center"><svg width="22" height="22" viewBox="0 0 22 22" fill="none"><path d="M6 11.5l3.5 3.5L16 8" stroke="#2c8a4b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg></div>
+    <div style="font-size:20px;font-weight:500;margin-top:6px">Members notified</div>
+    <div style="font-size:14px">{{ cancelled.n }} · {{ cancelled.day }} {{ cancelled.t }}</div>
+  </div>
+  <div style="display:flex;gap:12px;background:var(--tint,#eef8d6);border-radius:14px;padding:14px 16px">
+    <div style="width:20px;height:20px;border-radius:50%;border:1.6px solid #2c8a4b;color:var(--accent,#2c8a4b);display:flex;align-items:center;justify-content:center;font-size:11px;flex:none">✓</div>
+    <div><div style="font-size:14px;font-weight:500">{{ cancelled.credits }} credits returned</div><div style="font-size:12px;color:var(--muted,#555a53);margin-top:3px">Members received push and email notifications</div></div>
+  </div>
+  <button onClick="{{ act.replacement }}" style="width:100%;height:50px;border:none;border-radius:999px;background:#c3f03f;color:#15260c;font:inherit;font-size:15px;font-weight:500;cursor:pointer">Create replacement class</button>
+  <button onClick="{{ act.toOSchedule }}" style="width:100%;height:50px;border:1px solid var(--line,#e0e0da);border-radius:999px;background:var(--card,#fff);color:var(--ink,#161916);font:inherit;font-size:15px;cursor:pointer">Back to schedule</button>
+</sc-if>
+
+  </div>
+  </div>
+
+  <sc-if value="{{ showTabs }}" hint-placeholder-val="{{ false }}">
+  <div style="flex:none;height:84px;background:var(--card,#fff);border-top:1px solid var(--line,#ececE7);display:flex;justify-content:space-around;padding:10px 8px 0;box-sizing:border-box">
+    <button onClick="{{ tabs.home.on }}" style="width:76px;border:none;background:none;display:flex;flex-direction:column;align-items:center;gap:4px;font:inherit;font-size:11px;cursor:pointer;color:{{ tabs.home.color }}">
+      <svg width="22" height="22" viewBox="0 0 22 22" fill="none"><path d="M3.5 9.5L11 3.5l7.5 6V18a1 1 0 01-1 1h-4v-5h-5v5h-4a1 1 0 01-1-1V9.5z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"></path></svg>Home</button>
+    <button onClick="{{ tabs.schedule.on }}" style="width:76px;border:none;background:none;display:flex;flex-direction:column;align-items:center;gap:4px;font:inherit;font-size:11px;cursor:pointer;color:{{ tabs.schedule.color }}">
+      <svg width="22" height="22" viewBox="0 0 22 22" fill="none"><rect x="3.5" y="5" width="15" height="13.5" rx="2" stroke="currentColor" stroke-width="1.6"></rect><path d="M3.5 9h15M7.5 3v4M14.5 3v4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"></path></svg>Schedule</button>
+    <button onClick="{{ tabs.community.on }}" style="width:76px;border:none;background:none;display:flex;flex-direction:column;align-items:center;gap:4px;font:inherit;font-size:11px;cursor:pointer;color:{{ tabs.community.color }}">
+      <svg width="22" height="22" viewBox="0 0 22 22" fill="none"><circle cx="8.5" cy="7.5" r="3.2" stroke="currentColor" stroke-width="1.6"></circle><path d="M2.5 18.5c.6-3.3 3-5 6-5s5.4 1.7 6 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"></path><circle cx="15" cy="7.5" r="2.6" stroke="currentColor" stroke-width="1.6"></circle><path d="M16.5 13.2c1.8.5 2.8 2.2 3.1 4.6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"></path></svg>Community</button>
+    <button onClick="{{ tabs.profile.on }}" style="width:76px;border:none;background:none;display:flex;flex-direction:column;align-items:center;gap:4px;font:inherit;font-size:11px;cursor:pointer;color:{{ tabs.profile.color }}">
+      <svg width="22" height="22" viewBox="0 0 22 22" fill="none"><circle cx="11" cy="7.5" r="3.5" stroke="currentColor" stroke-width="1.6"></circle><path d="M4.5 19c.7-3.6 3.3-5.5 6.5-5.5s5.8 1.9 6.5 5.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"></path></svg>Profile</button>
+  </div>
+  </sc-if>
+  <div style="position:absolute;bottom:8px;left:50%;transform:translateX(-50%);width:134px;height:5px;border-radius:3px;background:var(--ink,#161916);z-index:6"></div>
+
+  <sc-if value="{{ hasToast }}" hint-placeholder-val="{{ false }}">
+    <div key="{{ toastKey }}" style="position:absolute;left:50%;bottom:104px;transform:translateX(-50%);max-width:330px;width:max-content;background:var(--hero,#13261a);color:#fff;font-size:13px;padding:11px 16px;border-radius:14px;box-shadow:0 10px 30px rgba(0,0,0,.2);animation:toastIn .22s ease both;z-index:10;text-align:center;line-height:1.35">{{ toast }}</div>
+  </sc-if>
+</div>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;startRole&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;member&quot;,&quot;coach&quot;,&quot;owner&quot;],&quot;default&quot;:&quot;member&quot;,&quot;tsType&quot;:&quot;'member'|'coach'|'owner'&quot;},&quot;showNavigator&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;},&quot;theme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;light&quot;,&quot;dark&quot;],&quot;default&quot;:&quot;light&quot;,&quot;tsType&quot;:&quot;string&quot;}}">
+const DAYS=[{k:'M 11',name:'Monday',short:'MON 11'},{k:'T 12',name:'Tuesday',short:'TUE 12'},{k:'W 13',name:'Wednesday',short:'WED 13'},{k:'T 14',name:'Thursday',short:'THU 14'},{k:'F 15',name:'Friday',short:'FRI 15'}];
+const BASE=[
+ {n:'Mobility Reset',t:'07:00',coach:'Leo',coachFull:'Leo Ortiz',coachIni:'LO',role:'Mobility coach',type:'Mobility',studio:'Studio B',cap:12,img:'assets/welcome.png',desc:'Open up hips, spine and shoulders with guided mobility flows. The perfect reset before a heavy week.'},
+ {n:'Reformer Flow',t:'12:15',coach:'Nina',coachFull:'Nina Patel',coachIni:'NP',role:'Strength coach',type:'Reformer',studio:'Studio B',cap:10,img:'assets/welcome.png',desc:'Low-impact reformer work for core control, posture and a strong, steady midline.'},
+ {n:'Strength Foundations',t:'18:00',coach:'Nina',coachFull:'Nina Patel',coachIni:'NP',role:'Strength coach',type:'Strength',studio:'Studio A',cap:12,img:'assets/strength.png',desc:'Build confident movement with progressive squats, carries and presses. All levels welcome.'},
+ {n:'Conditioning Circuit',t:'19:15',coach:'Amara',coachFull:'Amara Okafor',coachIni:'AO',role:'Conditioning coach',type:'Conditioning',studio:'Studio A',cap:12,img:'assets/strength.png',desc:'Fast-paced stations mixing kettlebells, rower and bodyweight work. Leave everything on the floor.'}];
+const FILL=[[6,10,9,4],[8,10,7,10],[3,9,11,5],[12,6,8,7],[5,10,4,9]];
+const PLANS=[{id:'one',name:'1 class / week',short:'1 / week',sub:'4 credits each month',price:79,credits:4,goal:1},{id:'two',name:'2 classes / week',short:'2 / week',sub:'8 credits · most popular',price:129,credits:8,goal:2},{id:'unl',name:'Unlimited',short:'Unlimited',sub:'Train as often as you like',price:179,credits:99,goal:3}];
+const EMOJI=['♥','💪','🔥','👏'];
+const META={
+ m_welcome:['PERFORMANCE, MADE PERSONAL','Welcome to FORM',null,'Welcome'],
+ m_signin:['SIGN IN','Welcome back',null,'Sign in'],
+ m_home:['TUESDAY · 12 MAY','','home','Home'],
+ m_schedule:['11–15 MAY','Weekly schedule','schedule','Weekly schedule'],
+ m_class:['','','schedule','Class details'],
+ m_booked:['CONFIRMATION',"You're booked",'schedule','Booking confirmed'],
+ m_packages:['TRAINING PACKAGES','Choose your rhythm','profile','Choose your rhythm'],
+ m_checkout:['','Secure checkout','profile','Secure checkout'],
+ m_bookings:['MAYA CHEN','My bookings','profile','My bookings'],
+ community:['FORM TOGETHER','Community','community','Community'],
+ post:['SAFE, POSITIVE COMMUNITY','Create a post','community','Create a post'],
+ meetups:['MOVE BEYOND THE STUDIO','Sports meetups','community','Sports meetups'],
+ meetup:['','','community','Meetup details'],
+ newmeetup:['COMMUNITY-LED','Create meetup','community','Create meetup'],
+ m_profile:['MAYA CHEN','Profile','profile','Profile'],
+ leaderboard:['FORM TOGETHER','Leaderboard','community','Leaderboard'],
+ store:['FORM SHOP','Store','profile','Store'],
+ c_home:['TUESDAY · 12 MAY','Good morning, Nina','home','Coach home'],
+ c_schedule:['11–15 MAY','My weekly schedule','schedule','My weekly schedule'],
+ c_class:['','','schedule','Class & session plan'],
+ c_checkin:['','Attendee check-in','schedule','Attendee check-in'],
+ c_notes:['','Member notes','profile','Member notes'],
+ c_programs:['TRAINING PROGRAMS','Workout plans','schedule','Workout plans'],
+ c_builder:['PLAN BUILDER','','schedule','Plan builder (AI)'],
+ o_overview:['MAY · LIVE','Studio overview','home','Studio overview'],
+ o_schedule:['11–15 MAY','Weekly studio schedule','schedule','Weekly studio schedule'],
+ o_manage:['TUESDAY · 12 MAY','Manage classes','schedule','Manage classes'],
+ o_roster:['','','schedule','Class roster'],
+ o_packages:['ACTIVE PLANS','Packages & pricing','profile','Packages & pricing'],
+ o_trainers:['4 ACTIVE TRAINERS','Trainer team','profile','Trainer team'],
+ o_settings:['FORM STUDIO','Business settings','profile','Business settings'],
+ o_cancelled:['SUCCESS','Class cancelled','schedule','Class cancelled']};
+const DESC={"m_welcome":"The front door. New people start here; members who already have an account sign in.","m_signin":"Type your email and password to get in. It tells you if something's wrong.","m_home":"Your daily dashboard: streak, credits left, next class, weekly goal and leaderboard rank.","m_schedule":"All the classes this week. Filter by type or open spots and book with one tap.","m_class":"Everything about one class: what you'll do, who coaches it, spots left. Book, waitlist or cancel.","m_booked":"A 'you're in!' confirmation, with tips for class day and an add-to-calendar button.","m_packages":"Pick how often you want to train. Each plan gives you credits to book classes.","m_checkout":"Enter your card and pay for the plan (a fake payment for the demo).","m_bookings":"Your classes: coming up, done, or cancelled — plus your plan and credits.","community":"A private photo feed just for this studio. Share wins, cheer with emojis, comment.","post":"Share something you're proud of. A photo is required and the kindness rules are right there.","meetups":"Workouts outside the gym that members organise — runs, hikes, padel. Join with a tap.","meetup":"Details for one meetup: where, what, who's going. Join or leave, message the host.","newmeetup":"Plan your own meetup: name, type, time, place and how many can come.","m_profile":"Your stats and settings: bookings, plan, shop, rewards, privacy and log out.","leaderboard":"Points for showing up — classes and meetups. Top members this week or month win prizes.","store":"The studio shop: protein, gear, clothes and private sessions. Your reward discount applies here.","c_home":"The coach's morning view: next class, today's numbers and today's classes.","c_schedule":"The coach's classes for each day and whether they're full.","c_class":"One class from the coach's side: bookings, the workout plan and notes about attendees.","c_checkin":"Tap each person as they arrive to mark them present, then start the class.","c_notes":"Private notes about a member only coaches can see, like an injury to be careful with.","c_programs":"The coach's library of workout plans. Open one or start a new one with AI.","c_builder":"Write a workout: add exercises to each part, tap one to change or swap it, ask the AI to adjust.","o_overview":"The owner's scoreboard: money, members, attendance, plus alerts that need action.","o_schedule":"Every class in the studio this week, filterable by room.","o_manage":"Add a class, change its time, coach or size, or cancel it.","o_roster":"Who's booked into one class, who's waiting, and who has arrived.","o_packages":"The plans the studio sells, how many people are on each, and which one earns the most.","o_trainers":"The studio's coaches and how many classes each teaches this week.","o_settings":"The studio's setup: details, rooms, payments, policies and team permissions.","o_cancelled":"Confirms a class was cancelled, members were told, and credits went back."};
+const ROLE_SCREENS={member:['m_welcome','m_signin','m_home','m_schedule','m_class','m_booked','m_packages','m_checkout','m_bookings','community','post','meetups','meetup','newmeetup','m_profile','leaderboard','store'],coach:['c_home','c_schedule','c_class','c_checkin','c_notes','c_programs','c_builder'],owner:['o_overview','o_schedule','o_manage','o_roster','o_packages','o_trainers','o_settings','o_cancelled']};
+const TAB_ROOT={member:{home:'m_home',schedule:'m_schedule',community:'community',profile:'m_profile'},coach:{home:'c_home',schedule:'c_schedule',community:'community',profile:'c_notes'},owner:{home:'o_overview',schedule:'o_schedule',community:'community',profile:'o_settings'}};
+const ME={member:{name:'Maya Chen',ini:'MC'},coach:{name:'Nina Patel',ini:'NP'},owner:{name:'FORM Studio',ini:'FS'}};
+const MEMBERS={
+ MC:{ini:'MC',name:'Maya Chen',meta:'42 visits · 2 classes/week',pinned:'Right shoulder sensitive overhead. Elevated push-ups feel good. Check in before pressing.',notes:['5 May · Nina — Smooth goblet squats at 18 kg. Great control.','28 Apr · Leo — Added thoracic mobility sequence.']},
+ JL:{ini:'JL',name:'Jordan Lee',meta:'18 visits · Unlimited',pinned:'No limitations. Loves a challenge — offer progressions.',notes:['6 May · Nina — First unassisted push-up!']},
+ AS:{ini:'AS',name:'Ari Singh',meta:'First class',pinned:'New member. Demo each station and check in after warm-up.',notes:[]},
+ EB:{ini:'EB',name:'Elena Brooks',meta:'9 visits · 1/week',pinned:'Left knee: avoid deep lunges, box squats are fine.',notes:['30 Apr · Amara — Knee felt good on step-ups.']},
+ TS:{ini:'TS',name:'Theo Smith',meta:'Unlimited',pinned:'No notes yet.',notes:[]}};
+const DARK={page:'#0b0d0b',bg:'#121512',card:'#1b1f1b',ink:'#eef0ea',muted:'#a3a89f',line:'#2c312c',tint:'#1f3324',tint2:'#28432d',tintInk:'#d4f0a6',warn:'#3a2b1b',chip:'#262b26',seg:'#232823',hero:'#1f3527',sel:'#c3f03f',selFg:'#15260c',accent:'#7fd08f',stA:'#232823',stB:'#1d211d'};
+const G='var(--accent,#2c8a4b)',ORANGE='#d9822b';
+const LB={week:[['JL','Jordan Lee',145,'4 classes · 2 meetups'],['EB','Elena Brooks',120,'3 classes · 1 meetup'],['MC','Maya Chen',110,'3 classes · 1 meetup · goal'],['AS','Ari Singh',85,'2 classes · 1 meetup'],['PR','Priya Rao',70,'2 classes · goal'],['TS','Theo Smith',60,'6 classes']],
+ month:[['MC','Maya Chen',455,'14 classes · 5 meetups'],['JL','Jordan Lee',480,'15 classes · 6 meetups'],['EB','Elena Brooks',410,'13 classes · 4 meetups'],['TS','Theo Smith',300,'24 classes'],['PR','Priya Rao',260,'9 classes · 3 meetups'],['AS','Ari Singh',85,'2 classes · 1 meetup']]};
+const PRIZES={week:[['1st','20% off the FORM Shop','Protein, accessories and apparel'],['2nd','Free recovery session','30 min stretch & massage-gun session'],['3rd','10% off the FORM Shop','Valid for 7 days']],
+ month:[['1st','Free 1:1 private session','60 min with the coach of your choice'],['2nd','Bring-a-friend pass ×2','Plus a free protein shake each'],['3rd','Priority booking','Book 24 h before everyone else next month']]};
+const BLOCKS=['Warm-up','Main','Finisher','Cool-down'];
+const LIB={'Warm-up':['Cat-cow','World\'s greatest stretch','Band pull-apart','Glute bridge','Inchworm'],
+ 'Main':['Goblet squat','Romanian deadlift','Half-kneeling DB press','Landmine press','Split squat','Bent-over row','Hip thrust','Push-up'],
+ 'Finisher':['Farmer carry','Dead bug','Kettlebell swing','Plank','Sled push'],
+ 'Cool-down':['90/90 hip switch','Child\'s pose breathing','Pigeon stretch','Thread the needle']};
+const SWAPS={'press':[['Landmine press','3×8/side','Shoulder-friendly angle, less overhead demand'],['Incline DB press','3×10','Stable bench, easier to control'],['Push-up (elevated)','3×10','Bodyweight, easy to regress']],
+ 'squat':[['Box squat','4×8','Controls depth, knee-friendly'],['Front-foot elevated split squat','3×8/side','Unilateral, less load needed'],['Kettlebell front squat','4×8','Same pattern, heavier progression']],
+ 'deadlift':[['Kettlebell deadlift','3×10','Easier setup for beginners'],['Hip thrust','3×12','Posterior chain, low back friendly'],['Single-leg RDL','3×8/side','Adds balance challenge']],
+ 'carry':[['Suitcase carry','3×30 m/side','Adds anti-lateral-flexion core work'],['Sled push','4×20 m','Conditioning with low skill'],['Front-rack carry','3×30 m','Upper back and core']],
+ 'default':[['Kettlebell variation','3×10','Same movement, different tool'],['Single-arm variation','3×8/side','Unilateral balance work'],['Tempo variation (3-1-1)','3×8','Less load, more control']]};
+const mkItem=(name,dose,note)=>({id:'i'+Math.random().toString(36).slice(2,8),name,dose,note:note||''});
+const PLANS_INIT=[
+ {id:'wp1',name:'Strength Foundations · Week 3',focus:'Strength',level:'All levels',dur:50,updated:'Updated 2 days ago',blocks:[
+  {name:'Warm-up',items:[mkItem('Cat-cow','1×8'),mkItem('World\'s greatest stretch','1×5/side'),mkItem('Goblet squat hold','2×20 s','Prime the squat pattern')]},
+  {name:'Main',items:[mkItem('Goblet squat','4×8','RPE 7 · 2 min rest'),mkItem('Half-kneeling DB press','3×8/side','Brace, ribs down'),mkItem('Romanian deadlift','3×10','Soft knees, hinge')]},
+  {name:'Finisher',items:[mkItem('Farmer carry','3×30 m'),mkItem('Dead bug','3×10')]},
+  {name:'Cool-down',items:[mkItem('90/90 hip switch','1×6/side'),mkItem('Child\'s pose breathing','2 min')]}]},
+ {id:'wp2',name:'Reformer Flow · Core control',focus:'Reformer',level:'Intermediate',dur:50,updated:'Updated last week',blocks:[
+  {name:'Warm-up',items:[mkItem('Footwork series','1×10 each')]},{name:'Main',items:[mkItem('Hundred','1×100'),mkItem('Long stretch','3×6'),mkItem('Side splits','2×8')]},{name:'Finisher',items:[mkItem('Plank on carriage','3×30 s')]},{name:'Cool-down',items:[mkItem('Mermaid stretch','1×4/side')]}]},
+ {id:'wp3',name:'Mobility Reset · Hips & T-spine',focus:'Mobility',level:'All levels',dur:50,updated:'Updated 3 weeks ago',blocks:[
+  {name:'Warm-up',items:[mkItem('Cat-cow','1×10')]},{name:'Main',items:[mkItem('90/90 hip switch','3×6/side'),mkItem('Thread the needle','3×6/side'),mkItem('Cossack squat','3×5/side')]},{name:'Finisher',items:[]},{name:'Cool-down',items:[mkItem('Pigeon stretch','1 min/side')]}]}];
+const PRODUCTS=[
+ {id:'p1',cat:'Protein',name:'Whey Isolate · Vanilla',sub:'900 g · 30 servings',price:54,ph:'protein tub'},
+ {id:'p2',cat:'Protein',name:'Plant Protein · Cacao',sub:'1 kg · vegan',price:48,ph:'plant protein bag'},
+ {id:'p3',cat:'Protein',name:'Protein Bars · Box of 12',sub:'20 g protein each',price:30,ph:'bar box'},
+ {id:'p4',cat:'Protein',name:'Creatine Monohydrate',sub:'300 g · unflavoured',price:28,ph:'creatine jar'},
+ {id:'p5',cat:'Accessories',name:'Resistance Band Set',sub:'5 levels',price:24,ph:'band set'},
+ {id:'p6',cat:'Accessories',name:'Lifting Straps',sub:'Padded cotton',price:18,ph:'lifting straps'},
+ {id:'p7',cat:'Accessories',name:'FORM Shaker',sub:'700 ml · steel',price:16,ph:'shaker bottle'},
+ {id:'p8',cat:'Accessories',name:'Speed Jump Rope',sub:'Adjustable',price:16,ph:'jump rope'},
+ {id:'p9',cat:'Apparel',name:'FORM Training Tee',sub:'Recycled poly',price:32,ph:'t-shirt'},
+ {id:'p10',cat:'Apparel',name:'Reformer Grip Socks',sub:'2 pairs',price:14,ph:'grip socks'},
+ {id:'p11',cat:'Sessions',name:'1:1 Private Session',sub:'60 min · any coach',price:90,ph:'private session'},
+ {id:'p12',cat:'Sessions',name:'Recovery Session',sub:'30 min stretch',price:40,ph:'recovery session'}];
+const chip=(on)=>on?{bg:'var(--sel,#13261a)',fg:'var(--selFg,#fff)',bd:'var(--sel,#13261a)'}:{bg:'var(--card,#fff)',fg:'var(--muted,#555a53)',bd:'var(--line,#e0e0da)'};
+
+class Component extends DCLogic {
+  scrollRef = React.createRef();
+  rootRef = React.createRef();
+  state = {
+    role: this.props.startRole ?? 'member',
+    theme: (()=>{try{return localStorage.getItem('form-theme')}catch(e){return null}})() || this.props.theme || 'light',
+    stacks:{member:['m_welcome'],coach:['c_home'],owner:['o_overview']},
+    toast:null,toastKey:0,
+    credits:6,plan:'two',selPlan:'two',onboarding:false,paying:false,
+    classBooked:Object.fromEntries(FILL.flatMap((r,d)=>r.map((v,i)=>[d+'-'+i,v]))),
+    bookings:[{id:'b1',cid:'1-2',status:'up'},{id:'b2',cid:'4-1',status:'up'},{id:'b3',cid:'0-0',status:'past'},{id:'b4',cid:'0-3',status:'cancelled',refund:true}],
+    selClass:'1-2',lastBooked:'1-2',calAdded:false,day:1,filter:'All',bTab:'up',
+    form:{email:'maya.chen@example.com',password:'formstudio',holder:'Maya Chen',card:'4242 4242 4242 4242',exp:'09 / 29',cvc:'123'},err:{},
+    posts:[
+     {id:'p1',author:'Jordan Lee',ago:'24 min',img:'assets/community.png',text:"First unassisted push-up today! Nina's cue finally clicked 💚",counts:{'♥':38,'💪':12,'🔥':6,'👏':9},mine:null,own:false,comments:[{a:'Amara',t:'You earned that moment — amazing work!'},{a:'Leo',t:'Huge! Next stop: three in a row.'},{a:'Elena',t:'So proud of you 👏'}]},
+     {id:'p2',author:'Ari Singh',ago:'3 h',img:'assets/strength.png',text:'First class done. Everyone made it so easy to jump in — see you Thursday.',counts:{'♥':21,'💪':4,'🔥':2,'👏':15},mine:null,own:false,comments:[{a:'Nina',t:'Welcome to the crew, Ari!'}]}],
+    openPost:null,draft:'',postText:'',postPhoto:false,
+    meetups:[
+     {id:'mt1',day:'SUN 08',time:'08:00',when:'SUNDAY · 08:00',name:'Riverside easy 5K',host:'Jordan Lee',going:14,cap:null,place:'River Gate, Eastbank',type:'Run',detail:'Conversational pace · 5 km',after:'Coffee at Grounded afterward',img:'assets/riverside.png',joined:false},
+     {id:'mt2',day:'SAT 10',time:'09:30',when:'SATURDAY · 09:30',name:'Beginner padel morning',host:'Amara Okafor',going:8,cap:12,place:'North Courts',type:'Social',detail:'Rackets available · all levels',after:'Brunch nearby',img:'assets/meetups.png',joined:false},
+     {id:'mt3',day:'SUN 09',time:'10:00',when:'SUNDAY · 10:00',name:'Hill walk + coffee',host:'Leo Ortiz',going:11,cap:null,place:'Cedar Trail car park',type:'Hike',detail:'Moderate · 8 km loop',after:'Coffee at the trailhead',img:'assets/meetups.png',joined:false}],
+    mFilter:'All',selMeetup:'mt1',meetupsJoined:6,
+    wplans:PLANS_INIT,openItem:null,wpSel:'wp1',aiPrompt:'',aiBusy:false,aiBusyLabel:'',aiSummary:'',aiPrev:null,swapFor:null,swapOpts:[],swapLoading:false,addingBlock:null,
+    lbPeriod:'week',bonusPts:0,cart:{},rewardOn:true,storeCat:'All',
+    nm:{name:'',date:'',place:'',cap:'',notes:'',type:'Run'},nmErr:'',
+    cDay:1,cSel:'1-2',planEdit:false,
+    sessionPlan:['Warm-up & squat pattern · 10 min','Goblet squat + press · 20 min','Carries & core finisher · 15 min','Downshift · 5 min'],
+    attendees:[{ini:'MC',sub:'2/week · shoulder note',visits:'42 visits · 2/week',in:true},{ini:'JL',sub:'Unlimited · no notes',visits:'18 visits · Unlimited',in:true},{ini:'AS',sub:'First class · welcome',visits:'First class',in:false},{ini:'EB',sub:'1/week · knee note',visits:'9 visits · 1/week',in:false},{ini:'TS',sub:'Unlimited · no notes',visits:'Unlimited',in:false}],
+    started:false,selMember:'MC',notes:Object.fromEntries(Object.entries(MEMBERS).map(([k,v])=>[k,v.notes])),noteDraft:'',
+    alerts:[{id:'a1',kind:'warn',title:'Reformer Flow is overbooked',sub:'Tuesday 12:15 · 4 people waiting',cta:'View'},{id:'a2',kind:'warn',title:'6 failed renewals',sub:'$774 at risk · Send payment reminder',cta:'Send'},{id:'a3',kind:'ok',title:'Strong week',sub:'Friday evening attendance reached 94%',cta:''}],
+    oDay:1,oStudio:'All',oSel:'1-2',
+    manage:[{n:'Mobility Reset',t:'07:00',coach:'Leo',studio:'Studio A',booked:8,cap:12},{n:'Reformer Flow',t:'12:15',coach:'Nina',studio:'Studio B',booked:10,cap:10},{n:'Strength Foundations',t:'18:00',coach:'Nina',studio:'Studio A',booked:7,cap:12},{n:'Conditioning Circuit',t:'19:15',coach:'Amara',studio:'Studio A',booked:10,cap:12}],
+    editIdx:3,edit:{n:'Conditioning Circuit',t:'19:15',coach:'Amara',cap:'12'},
+    cancelled:{n:'Conditioning Circuit',day:'Tuesday',t:'19:15',credits:10}
+  };
+
+  applyTheme(){const el=document.querySelector('[data-form-root]');if(!el)return;const d=this.state.theme==='dark';Object.entries(DARK).forEach(([k,v])=>{if(d)el.style.setProperty('--'+k,v);else el.style.removeProperty('--'+k);});document.body.style.background=d?DARK.page:'#e8e8e3';}
+  componentDidMount(){setTimeout(()=>this.applyTheme(),0);setTimeout(()=>this.applyTheme(),300);}
+  componentDidUpdate(pp,ps){
+    if(ps.theme!==this.state.theme){this.applyTheme();try{localStorage.setItem('form-theme',this.state.theme)}catch(e){}}
+    if(pp.theme!==this.props.theme&&this.props.theme)this.setState({theme:this.props.theme});
+    const a=ps.stacks[ps.role].at(-1)+ps.role, b=this.cur()+this.state.role;
+    if(a!==b && this.scrollRef.current) this.scrollRef.current.scrollTop=0;
+    if(pp.startRole!==this.props.startRole && this.props.startRole) this.setState({role:this.props.startRole});
+  }
+  componentWillUnmount(){clearTimeout(this._t);clearTimeout(this._p);}
+  cur(){const s=this.state.stacks[this.state.role];return s[s.length-1];}
+  setStack(fn){this.setState(st=>({stacks:{...st.stacks,[st.role]:fn(st.stacks[st.role])}}));}
+  go=(s,extra)=>{this.setState(st=>({...(extra||{}),stacks:{...st.stacks,[st.role]:[...st.stacks[st.role],s]}}));};
+  replace=(s,extra)=>{this.setState(st=>({...(extra||{}),stacks:{...st.stacks,[st.role]:[...st.stacks[st.role].slice(0,-1),s]}}));};
+  reset=(s,extra)=>{this.setState(st=>({...(extra||{}),stacks:{...st.stacks,[st.role]:[s]}}));};
+  back=()=>this.setStack(s=>s.length>1?s.slice(0,-1):s);
+  toast=(m)=>{clearTimeout(this._t);this.setState(s=>({toast:m,toastKey:s.toastKey+1}));this._t=setTimeout(()=>this.setState({toast:null}),2400);};
+  jump=(s)=>{const role=this.state.role,root=TAB_ROOT[role][META[s][2]];const stack=(!root||root===s)?[s]:[root,s];this.setState(st=>({stacks:{...st.stacks,[role]:stack}}));};
+  cls(id){const [d,i]=id.split('-').map(Number);const b=BASE[i];const booked=this.state.classBooked[id];return {...b,id,d,i,day:DAYS[d],booked,spots:Math.max(0,b.cap-booked)};}
+  myBooking(id){return this.state.bookings.find(b=>b.cid===id&&b.status==='up');}
+  setF=(k,fmt)=>e=>{let v=e.target.value;if(fmt)v=fmt(v);this.setState(s=>({form:{...s.form,[k]:v},err:{...s.err,[k]:''}}));};
+
+  book=(id)=>{
+    const st=this.state,c=this.cls(id),mine=this.myBooking(id);
+    if(mine){this.go('m_class',{selClass:id});return;}
+    const wait=c.spots===0||st.credits<=0;
+    const nb={id:'b'+Date.now(),cid:id,status:'up',wait};
+    if(wait){this.setState({bookings:[nb,...st.bookings]});this.toast(c.spots===0?"Class is full — you're on the waitlist. We'll auto-book you if a spot opens.":"No credits left — you're on the waitlist.");return;}
+    this.setState(s=>({bookings:[nb,...s.bookings],credits:s.credits-1,classBooked:{...s.classBooked,[id]:s.classBooked[id]+1},lastBooked:id,calAdded:false}));
+    if(this.cur()==='m_class') this.replace('m_booked'); else this.go('m_booked');
+  };
+  cancelBooking=(id)=>{
+    const b=this.myBooking(id);if(!b)return;
+    this.setState(s=>({bookings:s.bookings.map(x=>x===b?{...x,status:'cancelled',refund:!b.wait}:x),credits:b.wait?s.credits:s.credits+1,classBooked:b.wait?s.classBooked:{...s.classBooked,[id]:s.classBooked[id]-1}}));
+    this.toast(b.wait?'Left the waitlist':'Booking cancelled · credit returned');
+  };
+  react=(pid,e)=>{
+    const p=this.state.posts.find(x=>x.id===pid);
+    if(p.own){this.toast("You can't react to your own post");return;}
+    this.setState(s=>({posts:s.posts.map(x=>{if(x.id!==pid)return x;const c={...x.counts};if(x.mine)c[x.mine]--;const mine=x.mine===e?null:e;if(mine)c[mine]++;return {...x,counts:c,mine};})}));
+  };
+  sendComment=()=>{
+    const t=this.state.draft.trim();if(!t||!this.state.openPost)return;
+    const me=ME[this.state.role].name.split(' ')[0];
+    this.setState(s=>({draft:'',posts:s.posts.map(x=>x.id===s.openPost?{...x,comments:[...x.comments,{a:me,t}]}:x)}));
+    this.toast('Comment posted');
+  };
+  toggleJoin=(id)=>{
+    const m=this.state.meetups.find(x=>x.id===id);
+    if(!m.joined&&m.cap&&m.going>=m.cap){this.toast('This meetup is full');return;}
+    this.setState(s=>({meetups:s.meetups.map(x=>x.id===id?{...x,joined:!x.joined,going:x.going+(x.joined?-1:1)}:x),meetupsJoined:s.meetupsJoined+(m.joined?-1:1),bonusPts:s.bonusPts+(m.joined?-15:15)}));
+    this.toast(m.joined?'You left the meetup · −15 pts':"You're in! +15 pts on the leaderboard");
+  };
+  curPlan(){return this.state.wplans.find(p=>p.id===this.state.wpSel);}
+  updPlan(fn){this.setState(s=>({wplans:s.wplans.map(p=>p.id===s.wpSel?fn(p):p)}));}
+  async llm(prompt){
+    if(!(window.claude&&window.claude.complete))throw new Error('no ai');
+    const txt=await window.claude.complete({messages:[{role:'user',content:prompt}],max_tokens:1500});
+    const a=txt.indexOf('{')>-1&&(txt.indexOf('[')===-1||txt.indexOf('{')<txt.indexOf('['))?txt.indexOf('{'):txt.indexOf('[');
+    const z=Math.max(txt.lastIndexOf('}'),txt.lastIndexOf(']'));
+    return JSON.parse(txt.slice(a,z+1));
+  }
+  planText(p){return p.blocks.map(b=>b.name+': '+(b.items.map(i=>`${i.name} (${i.dose}${i.note?', '+i.note:''})`).join('; ')||'—')).join('\n');}
+  fallbackRefine(p,req){
+    const r=req.toLowerCase();let blocks=JSON.parse(JSON.stringify(p.blocks)),summary='';
+    if(/draft/.test(r)||!p.blocks.some(b=>b.items.length)){blocks=PLANS_INIT[0].blocks.map(b=>({name:b.name,items:b.items.map(i=>mkItem(i.name,i.dose,i.note))}));summary='Drafted a balanced strength session: squat-pattern warm-up, three main lifts, a carry finisher and a cool-down.';}
+    else if(/shoulder/.test(r)){blocks.forEach(b=>b.items=b.items.map(i=>/press/i.test(i.name)?{...i,name:'Landmine press',dose:'3×8/side',note:'Shoulder-friendly angle'}:i));blocks[0].items.push(mkItem('Band pull-apart','2×15','Shoulder prep'));summary='Swapped overhead pressing for a landmine press and added band pull-aparts to the warm-up to prep the shoulder.';}
+    else if(/45|shorter|time/.test(r)){blocks[2].items=blocks[2].items.slice(0,1);blocks[3].items=blocks[3].items.slice(0,1);summary='Trimmed the finisher and cool-down to one exercise each — session now fits ~45 min.';}
+    else if(/harder|advanced|progress/.test(r)){blocks[1].items=blocks[1].items.map(i=>({...i,dose:i.dose.replace(/^(\d)/,d=>String(+d+1))}));blocks[2].items.push(mkItem('Kettlebell swing','3×15','Power finisher'));summary='Added a set to each main lift and a kettlebell swing finisher for more intensity.';}
+    else {blocks[1].items=blocks[1].items.map(i=>({...i,dose:i.dose.replace(/^(\d)/,d=>String(Math.max(2,+d-1))),note:'Regress if needed'}));summary='Removed one set from each main lift and flagged regressions — friendlier for first-timers.';}
+    return {blocks,summary};
+  }
+  runAI=async(req,mode)=>{
+    const p=this.curPlan();if(!req.trim()||this.state.aiBusy)return;
+    this.setState({aiBusy:true,aiBusyLabel:mode==='gen'?'Drafting your session…':'Refining your plan…',aiSummary:''});
+    const prompt=`You are an expert strength & fitness coach assistant helping a small-group studio coach write a workout plan.
+Plan name: ${p.name}. Focus: ${p.focus}. Level: ${p.level}. Duration: ${p.dur} min. Group size up to 12.
+Current plan:
+${this.planText(p)||'(empty)'}
+
+Coach request: "${req}"
+
+Return ONLY JSON: {"summary":"one or two sentences on what you changed and why","blocks":[{"name":"Warm-up","items":[{"name":"exercise","dose":"3×8","note":"short cue"}]},{"name":"Main","items":[...]},{"name":"Finisher","items":[...]},{"name":"Cool-down","items":[...]}]}
+Keep exactly these 4 blocks. Doses short (e.g. "3×8/side", "2 min", "3×30 m"). Notes max 6 words. Realistic for the duration.`;
+    let res;
+    try{const j=await this.llm(prompt);if(!j.blocks)throw 0;res={summary:j.summary||'Plan updated.',blocks:BLOCKS.map(n=>{const b=j.blocks.find(x=>x.name===n)||{items:[]};return {name:n,items:(b.items||[]).map(i=>mkItem(i.name,i.dose||'',i.note||''))};})};}
+    catch(e){res=this.fallbackRefine(p,req);}
+    const prev=p.blocks;
+    this.updPlan(x=>({...x,blocks:res.blocks,updated:'Updated just now'}));
+    this.setState({aiBusy:false,aiSummary:res.summary,aiPrev:prev,aiPrompt:'',swapFor:null,swapOpts:[]});
+  };
+  swapItem=async(bi,ii)=>{
+    const st=this.state,key=bi+'-'+ii;
+    if(st.swapFor===key){this.setState({swapFor:null,swapOpts:[]});return;}
+    const p=this.curPlan(),it=p.blocks[bi].items[ii];
+    this.setState({swapFor:key,swapOpts:[],swapLoading:true});
+    let opts;
+    try{
+      const j=await this.llm(`Suggest 3 quick alternative exercises to replace "${it.name}" (${it.dose}) in the ${p.blocks[bi].name} block of a ${p.focus} small-group class (${p.level}). Consider equipment limits and joint-friendliness. Return ONLY JSON array: [{"name":"...","dose":"3×8","why":"max 8 words"}]`);
+      opts=j.slice(0,3).map(o=>[o.name,o.dose,o.why]);
+    }catch(e){const k=Object.keys(SWAPS).find(k=>it.name.toLowerCase().includes(k))||'default';opts=SWAPS[k];}
+    if(this.state.swapFor!==key)return;
+    this.setState({swapOpts:opts,swapLoading:false});
+  };
+  pay=()=>{
+    if(this.state.paying)return;
+    const f=this.state.form,err={};
+    if(f.holder.trim().length<2)err.holder='Enter the name on the card';
+    if(f.card.replace(/\s/g,'').length!==16)err.card='Card number must be 16 digits';
+    if(!/^\d{2} \/ \d{2}$/.test(f.exp))err.exp='Use MM / YY';
+    if(!/^\d{3,4}$/.test(f.cvc))err.cvc='3–4 digits';
+    if(Object.keys(err).length){this.setState({err});return;}
+    this.setState({paying:true});
+    this._p=setTimeout(()=>{
+      const p=PLANS.find(x=>x.id===this.state.selPlan);
+      const onb=this.state.onboarding;
+      this.setState({paying:false,plan:p.id,credits:p.credits===99?99:p.credits,onboarding:false});
+      if(onb)this.reset('m_home');else this.reset('m_profile',{});
+      if(!onb)this.go('m_bookings');
+      this.toast('Payment confirmed · '+p.name+' is active');
+    },1300);
+  };
+
+  renderVals(){
+    const st=this.state,role=st.role,scr=this.cur(),m=META[scr];
+    const is={};Object.keys(META).forEach(k=>is[k]=k===scr);
+    const hr=new Date().getHours();const greet=hr<12?'Good morning':hr<18?'Good afternoon':'Good evening';
+    const myPlan=PLANS.find(p=>p.id===st.plan),selPlan=PLANS.find(p=>p.id===st.selPlan);
+    const c=this.cls(st.selClass),mt=st.meetups.find(x=>x.id===st.selMeetup)||st.meetups[0];
+    const ccls=this.cls(st.cSel),ocls=this.cls(st.oSel),mem=MEMBERS[st.selMember];
+    let eyebrow=m[0],title=m[1];
+    if(scr==='m_home')title=greet+', Maya';
+    if(scr==='m_class'){eyebrow=c.day.name.toUpperCase()+' · '+c.t;title=c.n;}
+    if(scr==='m_checkout')eyebrow=selPlan.name.toUpperCase();
+    if(scr==='meetup'){eyebrow=mt.when;title=mt.name;}
+    if(scr==='c_home')title=greet+', Nina';
+    if(scr==='c_class'){eyebrow=ccls.day.name.toUpperCase()+' · '+ccls.t;title=ccls.n;}
+    if(scr==='c_checkin')eyebrow=ccls.n.toUpperCase();
+    if(scr==='c_notes')eyebrow=mem.name.toUpperCase();
+    const wp=this.curPlan();
+    if(scr==='c_builder')title=wp.focus+' plan';
+    if(scr==='o_roster'){eyebrow='ROSTER · '+ocls.day.short.split(' ')[0]+' '+ocls.t;title=ocls.n;}
+    const hideTabs=['m_welcome','m_signin'].includes(scr)||(st.onboarding&&['m_packages','m_checkout'].includes(scr));
+    const tabs={};['home','schedule','community','profile'].forEach(t=>{tabs[t]={color:m[2]===t?G:'var(--muted,#8b8f88)',on:()=>this.reset(TAB_ROOT[role][t])};});
+
+    // member home
+    const ups=st.bookings.filter(b=>b.status==='up'&&!b.wait).map(b=>({b,c:this.cls(b.cid)})).sort((a,b)=>a.c.d-b.c.d||a.c.t.localeCompare(b.c.t));
+    const nx=ups[0];
+    const attended=st.bookings.filter(b=>b.status==='past').length;
+    const home={streak:3,attended,goal:myPlan.goal,minutes:attended*50,hasNext:!!nx,noNext:!nx,
+      next:nx?{t:nx.c.t,day:nx.c.day.short,n:nx.c.n,sub:`Coach ${nx.c.coach} · ${nx.c.studio} · ${nx.c.booked}/${nx.c.cap}`,open:()=>this.go('m_class',{selClass:nx.c.id})}:{}};
+
+    // schedule
+    const FILTERS=['All','Strength','Mobility','Reformer','Open spots'];
+    const list=BASE.map((_,i)=>this.cls(st.day+'-'+i)).filter(x=>st.filter==='All'||(st.filter==='Open spots'?x.spots>0:x.type===st.filter)).map(x=>{
+      const mine=this.myBooking(x.id);
+      let badge='Book',bg='var(--tint2,#eef6dc)',fg='var(--tintInk,#1d3a12)';
+      if(mine){badge=mine.wait?'Waitlisted':'Booked';bg=mine.wait?'var(--warn,#fdebd9)':'#c3f03f';fg=mine.wait?ORANGE:'#15260c';}
+      else if(x.spots===0){badge='Waitlist';bg='var(--warn,#fdebd9)';fg=ORANGE;}
+      return {t:x.t,n:x.n,sub:`${x.coach} · `+(x.spots?`${x.spots} spots`:'full'),badge,bg,fg,open:()=>this.go('m_class',{selClass:x.id}),act:(e)=>{e.stopPropagation();this.book(x.id);}};});
+    const sched={list,empty:!list.length,
+      filters:FILTERS.map(l=>({label:l,...chip(st.filter===l),on:()=>this.setState({filter:l})})),
+      days:DAYS.map((d,i)=>({label:d.k,...chip(st.day===i),on:()=>this.setState({day:i})}))};
+
+    const mineC=this.myBooking(c.id);
+    const cls={img:c.img,studio:c.studio,desc:c.desc,coachIni:c.coachIni,coachFull:c.coachFull,role:c.role,
+      pill:c.spots?`${c.spots} spots left`:'Full · waitlist',pillBg:c.spots?'var(--hero,#13261a)':'var(--warn,#fdebd9)',pillFg:c.spots?'#fff':ORANGE,
+      canBook:!mineC,isMine:!!mineC,bookLabel:c.spots?(st.credits>0?'Book with weekly credit':'Join waitlist (no credits)'):'Join waitlist',
+      mineLabel:mineC&&mineC.wait?"You're on the waitlist. We'll book you automatically if a spot opens.":`You're booked · ${c.day.name} ${c.t}`,
+      cancelLabel:mineC&&mineC.wait?'Leave waitlist':'Cancel booking',
+      book:()=>this.book(c.id),cancel:()=>this.cancelBooking(c.id)};
+    const lastB=this.cls(st.lastBooked);
+    const booked={dayName:lastB.day.name,line:`${lastB.n} · ${lastB.t}`,calLabel:st.calAdded?'Added to calendar ✓':'Add to calendar'};
+
+    const plans=PLANS.map(p=>({...p,bg:st.selPlan===p.id?'var(--tint,#eef8d6)':'var(--card,#fff)',bd:st.selPlan===p.id?'2px solid #3f9c55':'1px solid var(--line,#e8e8e3)',on:()=>this.setState({selPlan:p.id})}));
+
+    // bookings
+    const bkList=st.bookings.filter(b=>st.bTab==='up'?b.status==='up':b.status===st.bTab).map(b=>{const x=this.cls(b.cid);
+      let badge='Booked',bg='var(--tint2,#e2f5c4)',fg='var(--tintInk,#1d3a12)';
+      if(b.wait){badge='Waitlist';bg='var(--warn,#fdebd9)';fg=ORANGE;}
+      if(b.status==='past'){badge='Checked in';bg='var(--chip,#f0f0ec)';fg='var(--muted,#555a53)';}
+      if(b.status==='cancelled'){badge=b.refund?'Credit returned':'No refund';bg='var(--chip,#f0f0ec)';fg='var(--muted,#555a53)';}
+      return {day:x.day.short,t:x.t,n:x.n,sub:`${x.coach} · ${x.studio}`,badge,bg,fg,open:()=>this.go('m_class',{selClass:x.id})};});
+    const bk={list:bkList,empty:!bkList.length,tabs:[['up','Upcoming'],['past','Past'],['cancelled','Cancelled']].map(([k,l])=>({label:l,...chip(st.bTab===k),on:()=>this.setState({bTab:k})}))};
+
+    const prof={classes:42,meetups:st.meetupsJoined,rows:[
+      {label:'My bookings',on:()=>this.go('m_bookings')},
+      {label:'FORM Shop',on:()=>this.go('store')},
+      {label:'Leaderboard & rewards',on:()=>this.go('leaderboard')},
+      {label:'Membership & payment',on:()=>this.go('m_packages',{selPlan:st.plan})},
+      {label:'Personal details',on:()=>this.toast('Details are managed by the studio. You can update your photo.')},
+      {label:'Notifications',on:()=>this.toast('Push & in-app alerts on for bookings, cheers and meetups')},
+      {label:'Privacy & safety',on:()=>this.toast('Only FORM Eastbank members can see your posts')},
+      {label:'Contact studio on WhatsApp',on:()=>this.toast('Opening WhatsApp…')}]};
+
+    // community
+    const feed=st.posts.map(p=>{const open=st.openPost===p.id;return {...p,
+      reactions:EMOJI.map(e=>({e,count:p.counts[e]||0,bg:p.mine===e?'var(--tint,#eef8d6)':'var(--card,#fff)',bd:p.mine===e?'#3f9c55':'var(--line,#e0e0da)',on:()=>this.react(p.id,e)})),
+      hasTop:p.comments.length>0,top:p.comments[0]||{},rest:p.comments.slice(1),open,
+      commentLabel:open?'Hide comments':(p.comments.length?`${p.comments.length} encouraging comment${p.comments.length>1?'s':''} · Reply`:'Be the first to cheer'),
+      toggle:()=>this.setState({openPost:open?null:p.id,draft:''}),
+      report:()=>this.toast('Reported. The studio team will review it — the post stays visible until then.')};});
+
+    const lbRank=(per)=>LB[per].map(([ini,name,pts,detail])=>({ini,name,pts:ini==='MC'?pts+st.bonusPts:pts,detail,me:ini==='MC'})).sort((a,b)=>b.pts-a.pts);
+    const ranked=lbRank(st.lbPeriod),weekRanked=lbRank('week');
+    const myIdx=ranked.findIndex(r=>r.me),myWeek=weekRanked.findIndex(r=>r.me);
+    const podOrder=[1,0,2].map(i=>ranked[i]);
+    const lb={myRank:myWeek+1,myPts:weekRanked[myWeek].pts,
+      ends:st.lbPeriod==='week'?'Ends Sunday · 3 days left':'Ends 31 May · 19 days left',
+      periods:[['week','This week'],['month','This month']].map(([k,l])=>({label:l,...chip(st.lbPeriod===k),on:()=>this.setState({lbPeriod:k})})),
+      podium:podOrder.map(r=>{const rank=ranked.indexOf(r)+1;return {ini:r.ini,first:r.me?'You':r.name.split(' ')[0],rank,pts:r.pts,h:rank===1?'78px':rank===2?'60px':'48px',avBg:r.me?'#c3f03f':'var(--tint,#eef8d6)'};}),
+      rows:ranked.map((r,i)=>({rank:i+1,ini:r.ini,name:r.me?'You · Maya':r.name,detail:r.detail,pts:r.pts,bg:r.me?'var(--tint,#eef8d6)':'var(--card,#fff)'})),
+      gap:myIdx===0?"You're in first place — keep it up!":`${ranked[myIdx-1].pts-ranked[myIdx].pts+5} pts to pass ${ranked[myIdx-1].name.split(' ')[0]}. One meetup gets you there.`,
+      prizeTitle:st.lbPeriod==='week'?"This week's prizes":"This month's prizes",
+      prizes:PRIZES[st.lbPeriod].map(([place,title,sub],i)=>({place,title,sub,bg:i===0?'var(--tint,#eef8d6)':'var(--card,#fff)'}))};
+    const cartCount=Object.values(st.cart).reduce((a,b)=>a+b,0);
+    const subtotal=PRODUCTS.reduce((a,p)=>a+(st.cart[p.id]||0)*p.price,0);
+    const discount=st.rewardOn?Math.round(subtotal*10)/100:0;
+    const shop={rewardOn:st.rewardOn&&subtotal>0,rwBg:st.rewardOn?'var(--tint,#eef8d6)':'var(--card,#fff)',rwBd:st.rewardOn?'2px solid #3f9c55':'1px solid var(--line,#e8e8e3)',rwLabel:st.rewardOn?'Applied ✓':'Apply',
+      cats:['All','Protein','Accessories','Apparel','Sessions'].map(l=>({label:l,...chip(st.storeCat===l),on:()=>this.setState({storeCat:l})})),
+      items:PRODUCTS.filter(p=>st.storeCat==='All'||p.cat===st.storeCat).map(p=>{const q=st.cart[p.id]||0;return {...p,qty:q,none:!q,some:q>0,
+        add:()=>this.setState(s=>({cart:{...s.cart,[p.id]:(s.cart[p.id]||0)+1}})),dec:()=>this.setState(s=>({cart:{...s.cart,[p.id]:Math.max(0,(s.cart[p.id]||0)-1)}}))};}),
+      hasCart:cartCount>0,count:cartCount,subtotal:subtotal.toFixed(2),discount:discount.toFixed(2),total:(subtotal-discount).toFixed(2)};
+    const MF=['All','Run','Hike','Social'];
+    const mu={filters:MF.map(l=>({label:l,...chip(st.mFilter===l),on:()=>this.setState({mFilter:l})})),
+      list:st.meetups.filter(x=>st.mFilter==='All'||x.type===st.mFilter).map(x=>{const full=x.cap&&x.going>=x.cap&&!x.joined;return {...x,
+        sub:`${x.host.split(' ')[0]} · `+(x.cap?`${x.going}/${x.cap}`:`${x.going} going`)+` · ${x.place}`,
+        badge:x.joined?'Joined':full?'Full':'Join',bg:x.joined?'#c3f03f':full?'var(--chip,#f0f0ec)':'var(--tint2,#eef6dc)',fg:x.joined?'#15260c':full?'var(--muted,#8b8f88)':'var(--tintInk,#1d3a12)',
+        open:()=>this.go('meetup',{selMeetup:x.id}),act:(e)=>{e.stopPropagation();this.toggleJoin(x.id);}};})};
+    const av=['JL','MC','AS'].slice(0,Math.min(3,mt.going));
+    const mtv={...mt,avatars:[...av,mt.going>3?'+'+(mt.going-3):''].filter(Boolean),goingLabel:mt.cap?`${mt.going} of ${mt.cap} spots taken`:`${mt.going} going`,
+      joinLabel:mt.joined?'Leave meetup':'Join meetup',joinBg:mt.joined?'var(--card,#fff)':'#c3f03f',joinBd:mt.joined?'1px solid var(--line,#e0e0da)':'none',joinFg:mt.joined?'var(--ink,#161916)':'#15260c',join:()=>this.toggleJoin(mt.id)};
+    const nmTypes=['Run','Hike','Ride','Social'].map(l=>({label:l,...chip(st.nm.type===l),on:()=>this.setState(s=>({nm:{...s.nm,type:l}}))}));
+
+    // coach
+    const coachToday=[this.cls('1-1'),this.cls('1-2')].map(x=>({t:x.t,n:x.n,sub:`${x.studio} · `+(x.spots?`${x.booked}/${x.cap}`:'full'),open:()=>this.go('c_class',{cSel:x.id}),act:(e)=>{e.stopPropagation();this.go('c_checkin',{cSel:x.id});}}));
+    const coachWeek=BASE.map((b,i)=>({b,i})).filter(o=>o.b.coach==='Nina'||o.i===0).map(o=>{const x=this.cls(st.cDay+'-'+o.i);const full=!x.spots;return {t:x.t,n:x.n,sub:`${x.studio} · ${x.booked}/${x.cap}`,badge:full?'Full':'Open',bg:full?'var(--warn,#fdebd9)':'var(--tint2,#e2f5c4)',fg:full?ORANGE:'var(--tintInk,#1d3a12)',open:()=>this.go('c_class',{cSel:x.id})};});
+    const coach={today:coachToday,week:coachWeek,openNext:()=>this.go('c_class',{cSel:'1-1'}),days:DAYS.map((d,i)=>({label:d.k,...chip(st.cDay===i),on:()=>this.setState({cDay:i})}))};
+    const cc={headline:`${ccls.booked} booked · `+(ccls.spots?`${ccls.spots} spots open`:'full'),studio:ccls.studio};
+    const sessionPlan=st.sessionPlan.map((t,i)=>({text:t,num:i+1,editing:st.planEdit,viewing:!st.planEdit,onChange:e=>{const v=e.target.value;this.setState(s=>({sessionPlan:s.sessionPlan.map((x,j)=>j===i?v:x)}));}}));
+    const checkedIn=st.attendees.filter(a=>a.in).length;
+    const attendees=st.attendees.map((a,i)=>({...a,name:MEMBERS[a.ini].name,status:a.in?'Checked in':'Expected',color:a.in?G:ORANGE,
+      toggle:()=>this.setState(s=>({attendees:s.attendees.map((x,j)=>j===i?{...x,in:!x.in}:x)})),openNotes:()=>this.go('c_notes',{selMember:a.ini,noteDraft:''})}));
+    const member={...mem,notes:st.notes[mem.ini].length?st.notes[mem.ini]:['No coaching notes yet.']};
+    const memberSwitch=Object.keys(MEMBERS).map(k=>({label:MEMBERS[k].name.split(' ')[0],...chip(st.selMember===k),on:()=>this.setState({selMember:k,noteDraft:''})}));
+
+    const nEx=p=>p.blocks.reduce((a,b)=>a+b.items.length,0);
+    const progs=st.wplans.map(p=>({name:p.name,focus:p.focus,meta:`${nEx(p)} exercises · ${p.dur} min · ${p.updated}`,open:()=>this.go('c_builder',{wpSel:p.id,aiSummary:'',aiPrev:null,swapFor:null,swapOpts:[],addingBlock:null})}));
+    const bp={name:wp.name,meta:`${wp.level} · ${wp.dur} min · ${nEx(wp)} exercises`,
+      focusChips:['Strength','Mobility','Reformer','Conditioning'].map(l=>({label:l,...chip(wp.focus===l),on:()=>this.updPlan(x=>({...x,focus:l}))})),
+      blocks:wp.blocks.map((b,bi)=>({name:b.name,count:b.items.length+(b.items.length===1?' exercise':' exercises'),adding:st.addingBlock===bi,addLabel:st.addingBlock===bi?'Done':'+ Add',
+        toggleAdd:()=>this.setState({addingBlock:st.addingBlock===bi?null:bi}),
+        library:(LIB[b.name]||[]).filter(n=>!b.items.some(i=>i.name===n)).map(n=>({name:n,on:()=>this.updPlan(x=>({...x,blocks:x.blocks.map((bb,j)=>j===bi?{...bb,items:[...bb.items,mkItem(n,b.name==='Main'?'3×10':'1×8')]}:bb)}))})),
+        empty:!b.items.length,items:b.items.map((it,ii)=>{const key=bi+'-'+ii,open=st.swapFor===key,exp=st.openItem===it.id;return {...it,open:exp,bd:exp?'#3f9c55':'#e8e8e3',toggle:()=>this.setState({openItem:exp?null:it.id,swapFor:null,swapOpts:[]}),swapLoading:open&&st.swapLoading,
+          options:open?st.swapOpts.map(([name,dose,why])=>({name,dose,why,use:()=>{this.updPlan(x=>({...x,blocks:x.blocks.map((bb,j)=>j===bi?{...bb,items:bb.items.map((i2,k)=>k===ii?mkItem(name,dose,why):i2)}:bb)}));this.setState({swapFor:null,swapOpts:[]});this.toast(`Swapped ${it.name} → ${name}`);}})):[],
+          swap:()=>this.swapItem(bi,ii),
+          remove:()=>{this.updPlan(x=>({...x,blocks:x.blocks.map((bb,j)=>j===bi?{...bb,items:bb.items.filter((_,k)=>k!==ii)}:bb)}));this.setState({swapFor:null});},
+          onDose:e=>{const v=e.target.value;this.updPlan(x=>({...x,blocks:x.blocks.map((bb,j)=>j===bi?{...bb,items:bb.items.map((i2,k)=>k===ii?{...i2,dose:v}:i2)}:bb)}));}};})}))};
+    const aiChips=(st.wplans.find(p=>p.id===st.wpSel).blocks.some(b=>b.items.length)?[['Make it easier','Make it easier for first-timers'],['Shoulder-friendly','Maya has a sensitive right shoulder overhead — adapt it'],['Fit in 45 min','Make it fit in 45 minutes']]:[['Draft full session','Draft a complete, balanced session for this focus and level','gen']]).map(([label,req,mode])=>({label,on:()=>this.runAI(req,mode)}));
+
+    // owner
+    const kpis=[{l:'Revenue',v:'$18.4k',d:'+8.2% MoM'},{l:'Members',v:'186',d:'+12 this month'},{l:'Attendance',v:'82%',d:'+4 pts'},{l:'Trial→paid',v:'41%',d:'Target 45%'}];
+    const alerts=st.alerts.map(a=>({...a,bg:a.kind==='ok'?'var(--tint,#eef8d6)':'var(--warn,#fdf0e2)',ic:a.kind==='ok'?G:ORANGE,glyph:a.kind==='ok'?'✓':'!',
+      on:()=>{if(a.id==='a1')this.go('o_schedule',{oDay:1});else if(a.id==='a2'){this.setState(s=>({alerts:s.alerts.filter(x=>x.id!=='a2')}));this.toast('Payment reminders sent to 6 members');}}}));
+    const osList=BASE.map((_,i)=>this.cls(st.oDay+'-'+i)).filter(x=>st.oStudio==='All'||x.studio===st.oStudio).map(x=>{const full=!x.spots;const w=full?4:0;return {t:x.t,n:x.n,sub:`${x.coach} · ${x.booked}/${x.cap}`+(w?` +${w}`:''),badge:full?'Waitlist':'Open',bg:full?'var(--warn,#fdebd9)':'var(--tint2,#e2f5c4)',fg:full?ORANGE:'var(--tintInk,#1d3a12)',open:()=>this.go('o_roster',{oSel:x.id})};});
+    const os={list:osList,filters:[['All','All coaches'],['Studio A','Studio A'],['Studio B','Studio B']].map(([k,l])=>({label:l,...chip(st.oStudio===k),on:()=>this.setState({oStudio:k})})),days:DAYS.map((d,i)=>({label:d.k,...chip(st.oDay===i),on:()=>this.setState({oDay:i})}))};
+    const manage=st.manage.map((x,i)=>({...x,sub:`${x.coach} · ${x.studio} · ${x.booked}/${x.cap}`,bd:st.editIdx===i?'2px solid #3f9c55':'1px solid var(--line,#e8e8e3)',edit:()=>this.setState({editIdx:i,edit:{n:x.n,t:x.t,coach:x.coach,cap:String(x.cap)}})}));
+    const roster={booked:`${ocls.booked} / ${ocls.cap}`,wait:ocls.spots?0:4};
+    const ownerPlans=[{name:'1 class / week',members:64,price:79,bg:'var(--card,#fff)'},{name:'2 classes / week',members:89,price:129,bg:'var(--tint,#eef8d6)'},{name:'Unlimited',members:33,price:179,bg:'var(--card,#fff)'}];
+    const trainers=[['NP','Nina Patel','Strength · 18 classes this week'],['LO','Leo Ortiz','Mobility · 14 classes this week'],['AO','Amara Okafor','Conditioning · 12 classes this week'],['SK','Sam Kim','Reformer · 9 classes this week']].map(([ini,name,sub])=>({ini,name,sub,on:()=>this.toast(name+' · schedule and permissions')}));
+    const settingsRows=[['Studio details & hours'],['Rooms & capacity'],['Packages & pricing','o_packages'],['Trainer team','o_trainers'],['Payment payouts'],['Waivers & policies'],['Notifications'],['Team permissions']].map(([label,to])=>({label,on:()=>to?this.go(to):this.toast(label+' — coming in the next build')}));
+
+    const roles=[['member','Member'],['coach','Coach'],['owner','Owner']].map(([k,l])=>({label:l,bg:role===k?'var(--card,#fff)':'transparent',fg:role===k?'var(--ink,#161916)':'var(--muted,#555a53)',on:()=>this.setState({role:k})}));
+    const screenList=ROLE_SCREENS[role].map((k,i)=>({label:META[k][3],num:String(i+1).padStart(2,'0'),bg:k===scr?'var(--card,#fff)':'transparent',fg:k===scr?'var(--ink,#161916)':'var(--muted,#555a53)',on:()=>this.jump(k)}));
+
+    const f={email:this.setF('email'),password:this.setF('password'),holder:this.setF('holder'),
+      card:this.setF('card',v=>v.replace(/\D/g,'').slice(0,16).replace(/(\d{4})(?=\d)/g,'$1 ')),
+      exp:this.setF('exp',v=>{const d=v.replace(/\D/g,'').slice(0,4);return d.length>2?d.slice(0,2)+' / '+d.slice(2):d;}),
+      cvc:this.setF('cvc',v=>v.replace(/\D/g,'').slice(0,4)),
+      draft:e=>this.setState({draft:e.target.value}),postText:e=>this.setState({postText:e.target.value}),noteDraft:e=>this.setState({noteDraft:e.target.value})};
+    ['name','date','place','cap','notes'].forEach(k=>f['nm_'+k]=e=>{const v=e.target.value;this.setState(s=>({nm:{...s.nm,[k]:v},nmErr:''}));});
+    f.bp_name=e=>{const v=e.target.value;this.updPlan(x=>({...x,name:v}));};
+    f.aiPrompt=e=>this.setState({aiPrompt:e.target.value});
+    ['n','t','coach','cap'].forEach(k=>f['e_'+k]=e=>{const v=e.target.value;this.setState(s=>({edit:{...s.edit,[k]:v}}));});
+
+    const act={
+      getStarted:()=>this.go('m_packages',{onboarding:true}),
+      toSignin:()=>this.go('m_signin'),
+      forgot:()=>this.toast('Reset link sent to '+(st.form.email||'your email')),
+      signIn:()=>{const err={};if(!/^\S+@\S+\.\S+$/.test(st.form.email))err.email='Enter a valid email';if(st.form.password.length<8)err.password='At least 8 characters';if(Object.keys(err).length){this.setState({err});return;}this.reset('m_home',{onboarding:false});this.toast('Signed in to FORM Eastbank');},
+      toBookings:()=>this.go('m_bookings',{bTab:'up'}),toSchedule:()=>this.reset('m_schedule'),toCommunity:()=>this.reset('community'),
+      addCal:()=>{this.setState({calAdded:true});this.toast('Added to your calendar');},
+      toCheckout:()=>this.go('m_checkout',{err:{}}),pay:this.pay,managePlan:()=>this.go('m_packages',{selPlan:st.plan}),
+      logout:()=>this.reset('m_welcome'),
+      toMeetups:()=>this.replace('meetups'),toPost:()=>this.go('post'),
+      toLeaderboard:()=>scr==='community'?this.replace('leaderboard'):this.go('leaderboard'),toFeed:()=>this.replace('community'),
+      toStore:()=>this.go('store'),toggleReward:()=>this.setState(s=>({rewardOn:!s.rewardOn})),
+      buy:()=>{const t=(subtotal-discount).toFixed(2);this.setState({cart:{},rewardOn:false});this.toast(`Order placed · $${t} · pick up at the front desk`);},
+      togglePhoto:()=>this.setState(s=>({postPhoto:!s.postPhoto})),
+      share:()=>{if(!st.postPhoto){this.toast('Add a photo or video to share');return;}const me=ME[role];
+        this.setState(s=>({posts:[{id:'p'+Date.now(),author:me.name,ago:'Just now',img:'assets/strength.png',text:s.postText.trim()||'Showed up today.',counts:{'♥':0,'💪':0,'🔥':0,'👏':0},mine:null,own:true,comments:[]},...s.posts],postText:'',postPhoto:false}));
+        this.back();this.toast('Shared with the FORM community');},
+      commentKey:e=>{if(e.key==='Enter')this.sendComment();},sendComment:this.sendComment,
+      toNewMeetup:()=>this.go('newmeetup',{nmErr:''}),msgHost:()=>this.toast('Message sent to '+mt.host),
+      publish:()=>{const n=st.nm;if(!n.name.trim()||!n.date.trim()||!n.place.trim()){this.setState({nmErr:'Name, date & time and meeting point are required'});return;}
+        const parts=n.date.split('·');const dayW=(parts[0]||'').trim().split(' ');const dayLbl=((dayW[0]||'').slice(0,3)+' '+(dayW[1]||'')).toUpperCase().trim();
+        const nmObj={id:'mt'+Date.now(),day:dayLbl||'SOON',time:(parts[1]||'').trim(),when:n.date.toUpperCase(),name:n.name.trim(),host:ME[role].name,going:1,cap:n.cap?parseInt(n.cap)||null:null,place:n.place.trim(),type:n.type,detail:n.notes.trim()||n.type,after:'—',img:'assets/meetups.png',joined:true};
+        this.setState(s=>({meetups:[nmObj,...s.meetups],nm:{name:'',date:'',place:'',cap:'',notes:'',type:'Run'},mFilter:'All'}));this.replace('meetups');this.toast('Meetup published · members notified');},
+      togglePlanEdit:()=>{if(st.planEdit)this.toast('Session plan saved');this.setState(s=>({planEdit:!s.planEdit}));},
+      toCheckin:()=>this.go('c_checkin'),
+      toPrograms:()=>this.go('c_programs'),
+      openBuilderP1:()=>this.go('c_builder',{wpSel:'wp1',aiSummary:'',aiPrev:null,swapFor:null,swapOpts:[],addingBlock:null}),
+      newPlan:()=>{const id='wp'+Date.now();const np={id,name:'New strength session',focus:'Strength',level:'All levels',dur:50,updated:'Updated just now',blocks:BLOCKS.map(n=>({name:n,items:[]}))};
+        this.setState(s=>({wplans:[np,...s.wplans],wpSel:id,aiSummary:'',aiPrev:null,swapFor:null,addingBlock:null}));this.go('c_builder');setTimeout(()=>this.runAI('Draft a complete, balanced 50-minute strength session for all levels','gen'),50);},
+      aiSend:()=>this.runAI(st.aiPrompt),aiKey:e=>{if(e.key==='Enter')this.runAI(st.aiPrompt);},
+      aiUndo:()=>{if(!st.aiPrev)return;const cur=wp.blocks;this.updPlan(x=>({...x,blocks:st.aiPrev}));this.setState({aiPrev:cur,aiSummary:st.aiSummary.startsWith('Reverted')?st.aiSummary.replace(/^Reverted · /,''):'Reverted · '+st.aiSummary});},
+      aiDismiss:()=>this.setState({aiSummary:'',aiPrev:null}),
+      savePlan:()=>{this.updPlan(x=>({...x,updated:'Updated just now'}));this.toast('Plan saved to your library');},
+      assignPlan:()=>{this.setState({sessionPlan:wp.blocks.filter(b=>b.items.length).map(b=>`${b.name} · ${b.items.map(i=>i.name).join(', ')}`)});this.toast('Session plan updated for Strength Foundations');},
+      startClass:()=>{this.setState(s=>({started:!s.started}));this.toast(st.started?'Class ended · attendance saved':`Class started · ${checkedIn} checked in`);},
+      saveNote:()=>{const t=st.noteDraft.trim();if(!t)return;this.setState(s=>({noteDraft:'',notes:{...s.notes,[s.selMember]:['12 May · Nina — '+t,...s.notes[s.selMember]]}}));this.toast('Private note saved');},
+      toManage:()=>this.go('o_manage'),
+      addClass:()=>this.setState({editIdx:-1,edit:{n:'',t:'',coach:'',cap:'12'}}),
+      saveClass:()=>{const e=st.edit;if(!e.n.trim()||!e.t.trim()){this.toast('Add a class name and time');return;}
+        const row={n:e.n.trim(),t:e.t.trim(),coach:e.coach.trim()||'TBC',studio:'Studio A',booked:st.editIdx>=0?st.manage[st.editIdx].booked:0,cap:parseInt(e.cap)||12};
+        this.setState(s=>{const mg=[...s.manage];if(s.editIdx>=0)mg[s.editIdx]=row;else mg.push(row);mg.sort((a,b)=>a.t.localeCompare(b.t));return {manage:mg,editIdx:mg.indexOf(row)};});
+        this.toast(st.editIdx>=0?'Changes saved · booked members notified':'Class added to schedule');},
+      cancelClass:()=>{const x=st.manage[st.editIdx];if(!x)return;this.setState(s=>({cancelled:{n:x.n,day:'Tuesday',t:x.t,credits:x.booked},manage:s.manage.filter((_,i)=>i!==s.editIdx),editIdx:-1,edit:{n:x.n,t:'',coach:x.coach,cap:String(x.cap)}}));this.replace('o_cancelled');},
+      checkAll:()=>{this.setState(s=>({attendees:s.attendees.map(a=>({...a,in:true}))}));this.toast('All present members checked in');},
+      msgAll:()=>this.toast('Message sent to all attendees'),
+      createPackage:()=>this.toast('New package draft created'),editPolicy:()=>this.toast('Cancellation window: 8 hours · 2 late cancels / month'),
+      addTrainer:()=>this.toast('Invite link copied — share it with your new trainer'),perms:()=>this.toast('Coaches can moderate the community and see member notes'),
+      replacement:()=>this.replace('o_manage'),toOSchedule:()=>this.reset('o_schedule')
+    };
+
+    return {
+      showNav:this.props.showNavigator ?? true,themeName:st.theme,themes:[['light','Light','#f4f4f1'],['dark','Dark','#1b1f1b']].map(([id,label,dot])=>({label,dot,bg:st.theme===id?'var(--card,#fff)':'transparent',fg:st.theme===id?'var(--ink,#161916)':'var(--muted,#555a53)',on:()=>this.setState({theme:id},()=>{this.applyTheme();try{localStorage.setItem('form-theme',id)}catch(e){}})})),screenName:m[3],screenDesc:DESC[scr]||"",roles,screenList,
+      scrollRef:this.scrollRef,screenKey:role+scr,is,meta:{eyebrow,title},canBack:st.stacks[role].length>1,back:this.back,
+      showTabs:!hideTabs,tabs,hasToast:!!st.toast,toast:st.toast,toastKey:st.toastKey,
+      form:st.form,err:st.err,f,act,credits:st.credits===99?'∞':st.credits,home,sched,cls,booked,plans,selPlan,myPlan,
+      paying:st.paying,payLabel:st.paying?'Processing…':`Pay $${selPlan.price}.00`,bk,prof,me:ME[role],
+      feed,draft:st.draft,postText:st.postText,postPhoto:st.postPhoto,noPhoto:!st.postPhoto,shareOpacity:st.postPhoto?1:.45,
+      mu,mt:mtv,nm:st.nm,nmErr:st.nmErr,nmTypes,
+      coach,cc,sessionPlan,planEditLabel:st.planEdit?'Done':'Edit',checkedIn,attendeeCount:st.attendees.length,attendees,
+      startLabel:st.started?'End class':'Start class',member,noteDraft:st.noteDraft,memberSwitch,
+      kpis,alerts,alertCount:st.alerts.length,os,manage,manageCount:st.manage.length+7,edit:st.edit,
+      editTitle:st.editIdx>=0?'Edit · '+(st.manage[st.editIdx]||{}).n:'Add class',canCancelClass:st.editIdx>=0,
+      roster,ownerPlans,trainers,settingsRows,cancelled:st.cancelled,lb,shop,
+      progs,bp,aiChips,aiPrompt:st.aiPrompt,aiBusy:st.aiBusy,aiBusyLabel:st.aiBusyLabel,hasAiSummary:!!st.aiSummary&&!st.aiBusy,aiSummary:st.aiSummary,undoLabel:st.aiSummary.startsWith('Reverted')?'Redo':'Undo'
+    };
+  }
+}
+</script>
+</body>
+</html>
